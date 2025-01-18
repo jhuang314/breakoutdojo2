@@ -1,8 +1,10 @@
-use dojo_starter::models::{Direction, Position};
+use dojo_starter::models::{Direction, Position, Ball, Veci2};
 
 // define the interface
 #[starknet::interface]
 trait IActions<T> {
+    fn start(ref self: T);
+    fn tick(ref self: T);
     fn spawn(ref self: T);
     fn move(ref self: T, direction: Direction);
 }
@@ -10,9 +12,9 @@ trait IActions<T> {
 // dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Direction, Position, next_position};
+    use super::{IActions, Direction, Position, next_position, next_ball};
     use starknet::{ContractAddress, get_caller_address};
-    use dojo_starter::models::{Vec2, Moves, DirectionsAvailable};
+    use dojo_starter::models::{Vec2, Moves, DirectionsAvailable, Ball, Veci2};
 
     use dojo::model::{ModelStorage, ModelValueStorage};
     use dojo::event::EventStorage;
@@ -27,6 +29,41 @@ pub mod actions {
 
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
+        
+        fn start(ref self: ContractState) {
+            // Get the default world.
+            let mut world = self.world_default();
+
+            // Get the address of the current caller, possibly the player's address.
+            let player = get_caller_address();
+
+            let new_ball = Ball {
+                player,
+       
+                vec: Veci2 { x: 400, y: 300 },
+                size: 10,
+                speed: 4,
+                dx: 4,
+                dy: -4,
+                visible: true,
+            };
+
+           
+            // Write the new entities to the world.
+            world.write_model(@new_ball);
+        }
+
+        fn tick(ref self: ContractState) {
+            let mut world = self.world_default();
+
+            let player = get_caller_address();
+
+            let ball: Ball = world.read_model(player);
+            let next_ball = next_ball(ball);
+
+            world.write_model(@next_ball);
+        }
+
         fn spawn(ref self: ContractState) {
             // Get the default world.
             let mut world = self.world_default();
@@ -114,4 +151,12 @@ fn next_position(mut position: Position, direction: Option<Direction>) -> Positi
         }
     };
     position
+}
+
+
+fn next_ball(mut ball: Ball) -> Ball {
+    // Calculate the new position of the ball based on its current motion.
+    ball.vec.x += ball.dx;
+    ball.vec.y += ball.dy;
+    ball
 }

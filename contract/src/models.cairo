@@ -2,6 +2,19 @@ use starknet::{ContractAddress};
 
 #[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
+pub struct Ball {
+    #[key]
+    pub player: ContractAddress,
+    pub vec: Veci2,
+    pub size: u32,
+    pub speed: i32,
+    pub dx: i32,
+    pub dy: i32,
+    pub visible: bool,
+}
+
+#[derive(Copy, Drop, Serde, Debug)]
+#[dojo::model]
 pub struct Moves {
     #[key]
     pub player: ContractAddress,
@@ -42,6 +55,11 @@ pub struct Vec2 {
     pub y: u32
 }
 
+#[derive(Copy, Drop, Serde, IntrospectPacked, Debug)]
+pub struct Veci2 {
+    pub x: i32,
+    pub y: i32
+}
 
 impl DirectionIntoFelt252 of Into<Direction, felt252> {
     fn into(self: Direction) -> felt252 {

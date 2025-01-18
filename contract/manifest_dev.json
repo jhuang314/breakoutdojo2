@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x2115aaa49adb5178478e04d8707ab7fe361aa9e140866b7365c3bb1f1d93334",
-      "class_hash": "0x6cbb5ab40ad7b48dff70edeacc4902a9eeae63a9e36456f9f908aedb904fbd2",
+      "address": "0x2951b74cf15e5d5814b2092db54358df1248f4a1619a36f496b3cdbe1b99770",
+      "class_hash": "0x1844bcd0defb12b55b5382ec297c132e14cf3bf51e70f9b9e7d64b745cfba88",
       "abi": [
         {
           "type": "impl",
@@ -1336,6 +1336,20 @@
           "type": "interface",
           "name": "dojo_starter::systems::actions::IActions",
           "items": [
+            {
+              "type": "function",
+              "name": "start",
+              "inputs": [],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "tick",
+              "inputs": [],
+              "outputs": [],
+              "state_mutability": "external"
+            },
             {
               "type": "function",
               "name": "spawn",
@@ -1476,6 +1490,8 @@
       "tag": "dojo_starter-actions",
       "selector": "0x7a1c71029f2d0b38e3ac89b09931d08b6e48417e079c289ff19a8698d0cba33",
       "systems": [
+        "start",
+        "tick",
         "spawn",
         "move",
         "upgrade"
@@ -1483,6 +1499,12 @@
     }
   ],
   "models": [
+    {
+      "members": [],
+      "class_hash": "0x6a05821b85684710d9d3cfded763557eb9a4758f3a467b682356e1bc2161733",
+      "tag": "dojo_starter-Ball",
+      "selector": "0x10512d4a7c4ea67ac0e146660d779e9fdc06c0a26e6b662e7020a08868aec37"
+    },
     {
       "members": [],
       "class_hash": "0x3f52c6cf17db224f4e7f88629adf7e907ff110baa0616c7e8ef17c5aecf1b1b",
