@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ParsedEntity, QueryBuilder } from "@dojoengine/sdk";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { AccountInterface, addAddressPadding, CairoCustomEnum } from "starknet";
 
-import { ModelsMapping, SchemaType } from "./typescript/models.gen.ts";
+import { ModelsMapping, SchemaType, Ball } from "./typescript/models.gen.ts";
 import { useSystemCalls } from "./useSystemCalls.ts";
 import { useAccount } from "@starknet-react/core";
 import { WalletAccount } from "./wallet-account.tsx";
@@ -22,6 +22,10 @@ function App() {
     const state = useDojoStore((state) => state);
     const entities = useDojoStore((state) => state.entities);
 
+
+    const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+    const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+
     const { spawn, start } = useSystemCalls();
 
     const entityId = useMemo(() => {
@@ -30,6 +34,15 @@ function App() {
         }
         return BigInt(0);
     }, [account]);
+
+    useEffect(() => {
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+        setCanvas(canvas);
+        const ctx = canvas.getContext('2d');
+        setCtx(ctx);
+
+        console.log('canvas loaded');
+    }, []);
 
     useEffect(() => {
         let unsubscribe: (() => void) | undefined;
@@ -67,6 +80,13 @@ function App() {
                         (data[0] as ParsedEntity<SchemaType>).entityId !== "0x0"
                     ) {
                         state.updateEntity(data[0] as ParsedEntity<SchemaType>);
+
+
+                        if (ctx && canvas) {
+
+                            draw(ctx, canvas);
+                        }
+                    
                     }
                 },
             });
@@ -83,7 +103,7 @@ function App() {
                 unsubscribe();
             }
         };
-    }, [sdk, account]);
+    }, [sdk, account, entities]);
 
     useEffect(() => {
         const fetchEntities = async (account: AccountInterface) => {
@@ -128,10 +148,33 @@ function App() {
     const position = useModel(entityId as string, ModelsMapping.Position);
     const game = useModel(entityId as string, ModelsMapping.Game);
 
+    // Canvas drawing logic.
+
+    // Draw ball
+    const drawBall = (ctx: CanvasRenderingContext2D) => {
+        const ball = Object.values(entities)[0].models.dojo_starter.Ball;
+        ctx.beginPath();
+        ctx.arc(Number(ball.vec.x), Number(ball.vec.y), Number(ball.size), 0, Math.PI * 2);
+        ctx.fillStyle = ball.visible ? '#0095dd' : 'transparent';
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    const draw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+        // clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawBall(ctx);
+    }
+
+
     return (
         <div className="bg-black min-h-screen w-full p-4 sm:p-8">
             <div className="max-w-7xl mx-auto">
                 <WalletAccount />
+                <div className="mt-8 overflow-x-auto">
+                    <canvas id="canvas" width="800" height="600"></canvas>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                     <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
