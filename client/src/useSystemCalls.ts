@@ -70,7 +70,55 @@ export const useSystemCalls = () => {
         }
     };
 
+    /**
+     * Start a new game.
+     * @returns {Promise<void>}
+     * @throws {Error} If the spawn action fails
+     */
+    const start = async () => {
+        // Generate a unique entity ID
+        const entityId = generateEntityId();
+
+        // Generate a unique transaction ID
+        const transactionId = uuidv4();
+
+        // The value to update the Moves model with
+        const ticks = 1;
+
+        // Apply an optimistic update to the state
+        // this uses immer drafts to update the state
+        state.applyOptimisticUpdate(transactionId, (draft) => {
+            if (draft.entities[entityId]?.models?.dojo_starter?.Game) {
+                draft.entities[entityId].models.dojo_starter.Game.ticks =
+                    ticks;
+                    console.log('set ticks', ticks);
+            }
+        });
+
+        try {
+            // Execute the spawn action from the client
+      
+            await client.actions.start(account!);
+
+            // Wait for the entity to be updated with the new state
+            await state.waitForEntityChange(entityId, (entity) => {
+                return (
+                    entity?.models?.dojo_starter?.Game?.ticks ===
+                    ticks
+                );
+            });
+        } catch (error) {
+            // Revert the optimistic update if an error occurs
+            state.revertOptimisticUpdate(transactionId);
+            console.error("Error executing start:", error);
+            throw error;
+        } finally {
+            // Confirm the transaction if successful
+            state.confirmTransaction(transactionId);
+        }
+    };
+
     return {
-        spawn,
+        spawn, start
     };
 };

@@ -2,14 +2,24 @@ use starknet::{ContractAddress};
 
 #[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
+pub struct Game {
+    #[key]
+    pub player: ContractAddress,
+    pub ticks: u32,
+}
+
+#[derive(Copy, Drop, Serde, Debug)]
+#[dojo::model]
 pub struct Ball {
     #[key]
     pub player: ContractAddress,
-    pub vec: Veci2,
+    pub vec: Vec2,
     pub size: u32,
-    pub speed: i32,
-    pub dx: i32,
-    pub dy: i32,
+    pub speed: u32,
+    pub dx: u32,
+    pub dy: u32,
+    pub dxnegative: bool,
+    pub dynegative: bool,
     pub visible: bool,
 }
 

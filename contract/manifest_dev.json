@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x2951b74cf15e5d5814b2092db54358df1248f4a1619a36f496b3cdbe1b99770",
-      "class_hash": "0x1844bcd0defb12b55b5382ec297c132e14cf3bf51e70f9b9e7d64b745cfba88",
+      "address": "0x3e79068b893260cbb59d0a7739bf4508a3a074768a91f23cd226a7dd4a29b59",
+      "class_hash": "0x10e69da0d3cfc5ef69d402d26f8073afd91afa684601b19e658d3179a48323d",
       "abi": [
         {
           "type": "impl",
@@ -1501,7 +1501,7 @@
   "models": [
     {
       "members": [],
-      "class_hash": "0x6a05821b85684710d9d3cfded763557eb9a4758f3a467b682356e1bc2161733",
+      "class_hash": "0x5d09d855c1d45953e9326599fc50645efd441cf5fb0d37d20cda71c0d1cadcc",
       "tag": "dojo_starter-Ball",
       "selector": "0x10512d4a7c4ea67ac0e146660d779e9fdc06c0a26e6b662e7020a08868aec37"
     },
@@ -1510,6 +1510,12 @@
       "class_hash": "0x3f52c6cf17db224f4e7f88629adf7e907ff110baa0616c7e8ef17c5aecf1b1b",
       "tag": "dojo_starter-DirectionsAvailable",
       "selector": "0x77844f1facb51e60e546a9832d56c6bd04fa23be4fd5b57290caae5e9a3c1e4"
+    },
+    {
+      "members": [],
+      "class_hash": "0x3ca6183ad074b5ad1430c742c81353dd3ca04d0a8a9501e48e023ee3c4821b0",
+      "tag": "dojo_starter-Game",
+      "selector": "0x19e11cf1403e104998a158f43ec6ae232dc65cf5445bcb29fb9fb5b7bb6c171"
     },
     {
       "members": [],

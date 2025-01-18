@@ -22,7 +22,7 @@ function App() {
     const state = useDojoStore((state) => state);
     const entities = useDojoStore((state) => state.entities);
 
-    const { spawn } = useSystemCalls();
+    const { spawn, start } = useSystemCalls();
 
     const entityId = useMemo(() => {
         if (account) {
@@ -46,6 +46,12 @@ function App() {
                                 )
                             )
                             .entity("Position", (e) =>
+                                e.is(
+                                    "player",
+                                    addAddressPadding(account.address)
+                                )
+                            )
+                            .entity("Ball", (e) =>
                                 e.is(
                                     "player",
                                     addAddressPadding(account.address)
@@ -120,6 +126,7 @@ function App() {
 
     const moves = useModel(entityId as string, ModelsMapping.Moves);
     const position = useModel(entityId as string, ModelsMapping.Position);
+    const game = useModel(entityId as string, ModelsMapping.Game);
 
     return (
         <div className="bg-black min-h-screen w-full p-4 sm:p-8">
@@ -127,6 +134,41 @@ function App() {
                 <WalletAccount />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                    <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
+                        <div className="grid grid-cols-3 gap-2 w-full h-48">
+                            <div className="col-start-2">
+                                <button
+                                    className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
+                                    onClick={async () => await start()}
+                                >
+                                    +Start
+                                </button>
+
+                                <button
+                                    className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
+                                    onClick={async () => {
+                                        await client.actions.tick(
+                                            account!
+                                        );
+                                    }}>Tick</button>
+                            </div>
+                            <div className="col-span-3 text-center text-base text-white">
+                                Ticks:{" "}
+                                {game ? `${game.ticks}` : "Need to Start"}
+                            </div>
+                            <div className="col-span-3 text-center text-base text-white">
+                                {position
+                                    ? `x: ${position?.vec?.x}, y: ${position?.vec?.y}`
+                                    : "Need to Spawn"}
+                            </div>
+                            <div className="col-span-3 text-center text-base text-white">
+                                {moves && moves.last_direction.isSome()
+                                    ? moves.last_direction.unwrap()
+                                    : ""}
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
                         <div className="grid grid-cols-3 gap-2 w-full h-48">
                             <div className="col-start-2">
@@ -201,6 +243,62 @@ function App() {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                <div className="mt-8 overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-700">
+                        <thead>
+                            <tr className="bg-gray-800 text-white">
+                                <th className="border border-gray-700 p-2">
+                                    Entity ID
+                                </th>
+                                <th className="border border-gray-700 p-2">
+                                    Player
+                                </th>
+                                <th className="border border-gray-700 p-2">
+                                    Ball X
+                                </th>
+                                <th className="border border-gray-700 p-2">
+                                    Ball Y
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.entries(entities).map(
+                                ([entityId, entity]) => {
+                                    const game =
+                                        entity.models.dojo_starter.Game;
+                                    const ball =
+                                        entity.models.dojo_starter.Ball;
+
+
+                                    return (
+                                        <tr
+                                            key={entityId}
+                                            className="text-gray-300"
+                                        >
+                                            <td className="border border-gray-700 p-2">
+                                                {entityId}
+                                            </td>
+                                            <td className="border border-gray-700 p-2">
+                                                {position?.player ?? "N/A"}
+                                            </td>
+                                            <td className="border border-gray-700 p-2">
+                                                {ball?.vec?.x.toString() ??
+                                                    "N/A"}
+                                            </td>
+                                            <td className="border border-gray-700 p-2">
+                                                {ball?.vec?.y.toString() ??
+                                                    "N/A"}
+                                            </td>
+
+                                        </tr>
+                                    );
+                                }
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
                 <div className="mt-8 overflow-x-auto">
