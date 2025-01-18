@@ -1,5 +1,8 @@
 use dojo_starter::models::{Direction, Position, Ball, Veci2};
 
+const MAX_WIDTH: u32 = 800;
+const MAX_HEIGHT: u32 = 600;
+
 // define the interface
 #[starknet::interface]
 trait IActions<T> {
@@ -161,15 +164,37 @@ fn next_position(mut position: Position, direction: Option<Direction>) -> Positi
 
 fn next_ball(mut ball: Ball) -> Ball {
     // Calculate the new position of the ball based on its current motion.
+
     if (ball.dxnegative) {
-        ball.vec.x -= ball.dx;
+        // Left wall collsion.
+        if (ball.vec.x < ball.dx + ball.size) {
+            ball.dxnegative = false;
+        } else {
+            ball.vec.x -= ball.dx;
+        }
     } else {
-        ball.vec.x += ball.dx;
+        // Right wall collsion.
+        if (ball.vec.x + ball.size > MAX_WIDTH) {
+            ball.dxnegative = true;
+        } else {
+            ball.vec.x += ball.dx;
+        }
     }
+
     if (ball.dynegative) {
-        ball.vec.y -= ball.dy;
+        // Top wall collsion.
+        if (ball.vec.y < ball.dy + ball.size) {
+            ball.dynegative = false;
+        } else {
+            ball.vec.y -= ball.dy;
+        }
     } else {
-        ball.vec.y += ball.dy;
+        // Bottom wall collsion.
+        if (ball.vec.y + ball.size > MAX_HEIGHT) {
+            ball.dynegative = true;
+        } else {
+            ball.vec.y += ball.dy;
+        }
     }
     ball
 }
