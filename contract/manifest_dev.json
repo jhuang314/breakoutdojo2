@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x3c8b20720bc501a42530fcd4654275ce3aad0ca3b8b1b0e78a1a727c4b0208d",
-      "class_hash": "0x26ec8500185013bed10d8b866ed163f123c1d7f95241d927f5d4d8bc7902e0e",
+      "address": "0x66a5fd43f417991e1cd1e1239210fec948a3b19b095d9482bb92612e3f6f243",
+      "class_hash": "0x41dee09f455d67fcd994db6138a32350b5d4f918039e4a0d13899481dbd8526",
       "abi": [
         {
           "type": "impl",
@@ -1514,12 +1514,6 @@
   "models": [
     {
       "members": [],
-      "class_hash": "0x5d09d855c1d45953e9326599fc50645efd441cf5fb0d37d20cda71c0d1cadcc",
-      "tag": "dojo_starter-Ball",
-      "selector": "0x10512d4a7c4ea67ac0e146660d779e9fdc06c0a26e6b662e7020a08868aec37"
-    },
-    {
-      "members": [],
       "class_hash": "0x62231ba6bc9e89e28bf2d8146bfe8ec0a405bf4361e3cd2e28327690a8d10d",
       "tag": "dojo_starter-Brick2",
       "selector": "0x52b3ed8ac640f963128d9f7ed782f327a09906e844a26776c963bf5398ef286"
@@ -1532,7 +1526,7 @@
     },
     {
       "members": [],
-      "class_hash": "0x63026e8969f7ae81b8660c05420414fa0961849d4eeb91ddedb2a7d0a224de8",
+      "class_hash": "0x7fcf6d143eab27fe85a746bf0bccebd1cfd9ded4422663c4e10a61ff31ee0df",
       "tag": "dojo_starter-Game",
       "selector": "0x19e11cf1403e104998a158f43ec6ae232dc65cf5445bcb29fb9fb5b7bb6c171"
     },
@@ -1541,12 +1535,6 @@
       "class_hash": "0x5f79e21312b142fc289d3bd1e0f4c65ac3c4e532252c6fb1ad48b718d892dc",
       "tag": "dojo_starter-Moves",
       "selector": "0x2a29373f1af8348bd366a990eb3a342ef2cbe5e85160539eaca3441a673f468"
-    },
-    {
-      "members": [],
-      "class_hash": "0x2d21c42ba9af48012e45003146271168267ed494f93dca5279fd534365e140b",
-      "tag": "dojo_starter-Paddle",
-      "selector": "0x5530b6c4c99e99b6a9e00a4d53759e3c01f7157246573b8a76b8fc81e50e995"
     },
     {
       "members": [],

@@ -69,18 +69,7 @@ function App() {
                                     addAddressPadding(account.address)
                                 )
                             )
-                            .entity("Ball", (e) =>
-                                e.is(
-                                    "player",
-                                    addAddressPadding(account.address)
-                                )
-                            )
-                            .entity("Paddle", (e) =>
-                                e.is(
-                                    "player",
-                                    addAddressPadding(account.address)
-                                )
-                            )
+                            
                             .entity("Game", (e) =>
                                 e.is(
                                     "player",
@@ -164,20 +153,20 @@ function App() {
     const moves = useModel(entityId as string, ModelsMapping.Moves);
     const position = useModel(entityId as string, ModelsMapping.Position);
     const game = useModel(entityId as string, ModelsMapping.Game);
-    const paddle = useModel(entityId as string, ModelsMapping.Paddle);
-    const ball = useModel(entityId as string, ModelsMapping.Ball);
+    // const paddle = useModel(entityId as string, ModelsMapping.Paddle);
+    // const ball = useModel(entityId as string, ModelsMapping.Ball);
 
 
     // Canvas drawing logic.
 
     // Draw ball
     const drawBall = (ctx: CanvasRenderingContext2D) => {
-        if (!ball) {
+        if (!game || !game.ball) {
             return;
         }
         ctx.beginPath();
-        ctx.arc(Number(ball.vec.x), Number(ball.vec.y), Number(ball.size), 0, Math.PI * 2);
-        ctx.fillStyle = ball.visible ? '#0095dd' : 'transparent';
+        ctx.arc(Number(game.ball.vec.x), Number(game.ball.vec.y), Number(game.ball.size), 0, Math.PI * 2);
+        ctx.fillStyle = game.ball.visible ? '#0095dd' : 'transparent';
         ctx.fill();
         ctx.closePath();
 
@@ -219,12 +208,12 @@ function App() {
 
     // Draw Paddle
     const drawPaddle = (ctx: CanvasRenderingContext2D) => {
-        if (!paddle) {
+        if (!game || !game.paddle) {
             return;
         }
         ctx.beginPath();
-        ctx.rect(Number(paddle.vec.x), Number(paddle.vec.y), Number(paddle.w), Number(paddle.h));
-        ctx.fillStyle = paddle.visible ? '#0095dd' : 'transparent';
+        ctx.rect(Number(game.paddle.vec.x), Number(game.paddle.vec.y), Number(game.paddle.w), Number(game.paddle.h));
+        ctx.fillStyle = game.paddle.visible ? '#0095dd' : 'transparent';
         ctx.fill();
         ctx.closePath();
     }
@@ -345,6 +334,7 @@ function App() {
                                 <button
                                     className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
                                     onClick={async () => await start()}
+
                                 >
                                     +Start
                                 </button>
@@ -547,8 +537,8 @@ function App() {
                                 ([entityId, entity]) => {
                                     const game =
                                         entity.models.dojo_starter.Game;
-                                    const ball =
-                                        entity.models.dojo_starter.Ball;
+                                    // const ball =
+                                    //     entity.models.dojo_starter.Ball;
 
 
                                     return (
@@ -566,15 +556,15 @@ function App() {
                                                 {game?.ticks ?? "N/A"}
                                             </td>
                                             <td className="border border-gray-700 p-2">
-                                                {ball?.vec?.x.toString() ??
+                                                {game?.ball?.vec?.x.toString() ??
                                                     "N/A"}
                                             </td>
                                             <td className="border border-gray-700 p-2">
-                                                {ball?.vec?.y.toString() ??
+                                                {game?.ball?.vec?.y.toString() ??
                                                     "N/A"}
                                             </td>
                                             <td className="border border-gray-700 p-2">
-                                                {paddle?.vec?.x.toString() ??
+                                                {game?.paddle?.vec?.x.toString() ??
                                                     "N/A"}
                                             </td>
                                         </tr>

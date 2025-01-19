@@ -9,15 +9,13 @@ pub struct Game {
     pub bricks: Array<Array<Brick>>,
     pub score: u32,
     pub active: bool,
-    // pub bricks: [[Brick; 5]; 9],
+    pub paddle: Paddle,
+    pub ball: Ball,
    
 }
 
-#[derive(Copy, Drop, Serde, Debug)]
-#[dojo::model]
+#[derive(Copy, Drop, Serde, IntrospectPacked, Debug)]
 pub struct Ball {
-    #[key]
-    pub player: ContractAddress,
     pub vec: Vec2,
     pub size: u32,
     pub speed: u32,
@@ -28,11 +26,8 @@ pub struct Ball {
     pub visible: bool,
 }
 
-#[derive(Copy, Drop, Serde, Debug)]
-#[dojo::model]
+#[derive(Copy, Drop, Serde, IntrospectPacked, Debug)]
 pub struct Paddle {
-    #[key]
-    pub player: ContractAddress,
     pub vec: Vec2,
     pub w: u32,
     pub h: u32,

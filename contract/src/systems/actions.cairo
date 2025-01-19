@@ -46,6 +46,32 @@ pub mod actions {
             // Get the address of the current caller, possibly the player's address.
             let player = get_caller_address();
 
+            let ball = Ball {
+                vec: Vec2 { x: 400, y: 300 },
+                size: 10,
+                speed: 4,
+                dx: 4,
+                dy: 4,
+                dxnegative: false,
+                dynegative: true,
+                visible: true,
+            };
+
+            // // Write the new entities to the world.
+            // world.write_model(@new_ball);
+
+            let paddle = Paddle {
+                vec: Vec2 { x: 360, y: 580 },
+                w: 80,
+                h: 10,
+                speed: 8,
+                dx: 0,
+                dxnegative: false,
+                visible: true,
+            };
+
+            // world.write_model(@new_paddle);
+
             let mut bricks = ArrayTrait::<Array<Brick>>::new();
 
             for col in 0
@@ -64,37 +90,9 @@ pub mod actions {
                     bricks.append(brickCol);
                 };
 
-            let game = Game { player, ticks: 1, bricks, score: 0, active: true };
+            let game = Game { player, ticks: 1, bricks, score: 0, active: true, paddle, ball };
 
             world.write_model(@game);
-
-            let new_ball = Ball {
-                player,
-                vec: Vec2 { x: 400, y: 300 },
-                size: 10,
-                speed: 4,
-                dx: 4,
-                dy: 4,
-                dxnegative: false,
-                dynegative: true,
-                visible: true,
-            };
-
-            // Write the new entities to the world.
-            world.write_model(@new_ball);
-
-            let new_paddle = Paddle {
-                player,
-                vec: Vec2 { x: 360, y: 580 },
-                w: 80,
-                h: 10,
-                speed: 8,
-                dx: 0,
-                dxnegative: false,
-                visible: true,
-            };
-
-            world.write_model(@new_paddle);
         }
 
         fn tick(ref self: ContractState) {
@@ -111,14 +109,15 @@ pub mod actions {
             let next_game = next_game(game);
             // world.write_model(@next_game);
 
-            let paddle: Paddle = world.read_model(player);
-            let next_paddle = next_paddle(paddle);
+            // let paddle: Paddle = world.read_model(player);
+            // let next_paddle = next_paddle(game.paddle);
 
-            let ball: Ball = world.read_model(player);
+            // let ball: Ball = world.read_model(player);
             // let game_bricks: Game = world.read_model(player);
-            let (next_ball, next_game_bricks) = next_ball(ball, next_game, next_paddle);
-            world.write_model(@next_ball);
-            world.write_model(@next_paddle);
+            let next_game_bricks = next_ball(next_game);
+
+            // world.write_model(@next_ball);
+            // world.write_model(@next_paddle);
             world.write_model(@next_game_bricks);
         }
 
@@ -127,9 +126,9 @@ pub mod actions {
 
             let player = get_caller_address();
 
-            let paddle: Paddle = world.read_model(player);
+            let game: Game = world.read_model(player);
 
-            let next_paddle = next_paddle_dx(paddle, Option::Some(direction));
+            let next_paddle = next_paddle_dx(game, Option::Some(direction));
 
             // Write the new position to the world.
             world.write_model(@next_paddle);
@@ -233,7 +232,11 @@ fn next_game(mut game: Game) -> Game {
 }
 
 
-fn next_ball(mut ball: Ball, mut game: Game, paddle: Paddle) -> (Ball, Game) {
+fn next_ball(mut game: Game) -> Game {
+    let mut paddle = game.paddle;
+    let next_paddle = next_paddle(paddle);
+    let mut ball = game.ball;
+
     // Calculate the new position of the ball based on its current motion.
 
     if (ball.dxnegative) {
@@ -325,7 +328,9 @@ fn next_ball(mut ball: Ball, mut game: Game, paddle: Paddle) -> (Ball, Game) {
         game.active = false;
     }
 
-    (ball, game)
+    game.ball = ball;
+    game.paddle = next_paddle;
+    game
 }
 
 
@@ -349,7 +354,8 @@ fn next_paddle(mut paddle: Paddle) -> Paddle {
     paddle
 }
 
-fn next_paddle_dx(mut paddle: Paddle, direction: Option<Direction>) -> Paddle {
+fn next_paddle_dx(mut game: Game, direction: Option<Direction>) -> Game {
+    let mut paddle = game.paddle;
     match direction {
         Option::None => {
             paddle.dx = 0;
@@ -374,7 +380,8 @@ fn next_paddle_dx(mut paddle: Paddle, direction: Option<Direction>) -> Paddle {
             },
         },
     };
-    paddle
+    game.paddle = paddle;
+    game
 }
 
 fn remove_brick(mut brick: Brick) -> Brick {

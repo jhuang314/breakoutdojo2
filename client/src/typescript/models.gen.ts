@@ -6,19 +6,6 @@ type WithFieldOrder<T> = T & { fieldOrder: string[] };
 
 // Type definition for `dojo_starter::models::Ball` struct
 export interface Ball {
-	player: string;
-	vec: Vec2;
-	size: BigNumberish;
-	speed: BigNumberish;
-	dx: BigNumberish;
-	dy: BigNumberish;
-	dxnegative: boolean;
-	dynegative: boolean;
-	visible: boolean;
-}
-
-// Type definition for `dojo_starter::models::BallValue` struct
-export interface BallValue {
 	vec: Vec2;
 	size: BigNumberish;
 	speed: BigNumberish;
@@ -76,6 +63,8 @@ export interface Game {
 	bricks: Array<Array<Brick>>;
 	score: BigNumberish;
 	active: boolean;
+	paddle: Paddle;
+	ball: Ball;
 }
 
 // Type definition for `dojo_starter::models::GameValue` struct
@@ -84,6 +73,8 @@ export interface GameValue {
 	bricks: Array<Array<Brick>>;
 	score: BigNumberish;
 	active: boolean;
+	paddle: Paddle;
+	ball: Ball;
 }
 
 // Type definition for `dojo_starter::models::Moves` struct
@@ -103,18 +94,6 @@ export interface MovesValue {
 
 // Type definition for `dojo_starter::models::Paddle` struct
 export interface Paddle {
-	player: string;
-	vec: Vec2;
-	w: BigNumberish;
-	h: BigNumberish;
-	speed: BigNumberish;
-	dx: BigNumberish;
-	dxnegative: boolean;
-	visible: boolean;
-}
-
-// Type definition for `dojo_starter::models::PaddleValue` struct
-export interface PaddleValue {
 	vec: Vec2;
 	w: BigNumberish;
 	h: BigNumberish;
@@ -164,7 +143,6 @@ export type DirectionEnum = CairoCustomEnum;
 export interface SchemaType extends ISchemaType {
 	dojo_starter: {
 		Ball: WithFieldOrder<Ball>,
-		BallValue: WithFieldOrder<BallValue>,
 		Brick: WithFieldOrder<Brick>,
 		Brick2: WithFieldOrder<Brick2>,
 		Brick2Value: WithFieldOrder<Brick2Value>,
@@ -175,7 +153,6 @@ export interface SchemaType extends ISchemaType {
 		Moves: WithFieldOrder<Moves>,
 		MovesValue: WithFieldOrder<MovesValue>,
 		Paddle: WithFieldOrder<Paddle>,
-		PaddleValue: WithFieldOrder<PaddleValue>,
 		Position: WithFieldOrder<Position>,
 		PositionValue: WithFieldOrder<PositionValue>,
 		Vec2: WithFieldOrder<Vec2>,
@@ -186,18 +163,6 @@ export interface SchemaType extends ISchemaType {
 export const schema: SchemaType = {
 	dojo_starter: {
 		Ball: {
-			fieldOrder: ['player', 'vec', 'size', 'speed', 'dx', 'dy', 'dxnegative', 'dynegative', 'visible'],
-			player: "",
-		vec: { x: 0, y: 0, },
-			size: 0,
-			speed: 0,
-			dx: 0,
-			dy: 0,
-			dxnegative: false,
-			dynegative: false,
-			visible: false,
-		},
-		BallValue: {
 			fieldOrder: ['vec', 'size', 'speed', 'dx', 'dy', 'dxnegative', 'dynegative', 'visible'],
 		vec: { x: 0, y: 0, },
 			size: 0,
@@ -252,19 +217,23 @@ export const schema: SchemaType = {
 				Down: undefined, })],
 		},
 		Game: {
-			fieldOrder: ['player', 'ticks', 'bricks', 'score', 'active'],
+			fieldOrder: ['player', 'ticks', 'bricks', 'score', 'active', 'paddle', 'ball'],
 			player: "",
 			ticks: 0,
 			bricks: [[{ row: 0, col: 0, vec: { x: 0, y: 0, }, w: 0, h: 0, visible: false, }]],
 			score: 0,
 			active: false,
+		paddle: { vec: { x: 0, y: 0, }, w: 0, h: 0, speed: 0, dx: 0, dxnegative: false, visible: false, },
+		ball: { vec: { x: 0, y: 0, }, size: 0, speed: 0, dx: 0, dy: 0, dxnegative: false, dynegative: false, visible: false, },
 		},
 		GameValue: {
-			fieldOrder: ['ticks', 'bricks', 'score', 'active'],
+			fieldOrder: ['ticks', 'bricks', 'score', 'active', 'paddle', 'ball'],
 			ticks: 0,
 			bricks: [[{ row: 0, col: 0, vec: { x: 0, y: 0, }, w: 0, h: 0, visible: false, }]],
 			score: 0,
 			active: false,
+		paddle: { vec: { x: 0, y: 0, }, w: 0, h: 0, speed: 0, dx: 0, dxnegative: false, visible: false, },
+		ball: { vec: { x: 0, y: 0, }, size: 0, speed: 0, dx: 0, dy: 0, dxnegative: false, dynegative: false, visible: false, },
 		},
 		Moves: {
 			fieldOrder: ['player', 'remaining', 'last_direction', 'can_move'],
@@ -280,17 +249,6 @@ export const schema: SchemaType = {
 			can_move: false,
 		},
 		Paddle: {
-			fieldOrder: ['player', 'vec', 'w', 'h', 'speed', 'dx', 'dxnegative', 'visible'],
-			player: "",
-		vec: { x: 0, y: 0, },
-			w: 0,
-			h: 0,
-			speed: 0,
-			dx: 0,
-			dxnegative: false,
-			visible: false,
-		},
-		PaddleValue: {
 			fieldOrder: ['vec', 'w', 'h', 'speed', 'dx', 'dxnegative', 'visible'],
 		vec: { x: 0, y: 0, },
 			w: 0,
@@ -335,7 +293,6 @@ export const schema: SchemaType = {
 };
 export enum ModelsMapping {
 	Ball = 'dojo_starter-Ball',
-	BallValue = 'dojo_starter-BallValue',
 	Brick = 'dojo_starter-Brick',
 	Brick2 = 'dojo_starter-Brick2',
 	Brick2Value = 'dojo_starter-Brick2Value',
@@ -347,7 +304,6 @@ export enum ModelsMapping {
 	Moves = 'dojo_starter-Moves',
 	MovesValue = 'dojo_starter-MovesValue',
 	Paddle = 'dojo_starter-Paddle',
-	PaddleValue = 'dojo_starter-PaddleValue',
 	Position = 'dojo_starter-Position',
 	PositionValue = 'dojo_starter-PositionValue',
 	Vec2 = 'dojo_starter-Vec2',
