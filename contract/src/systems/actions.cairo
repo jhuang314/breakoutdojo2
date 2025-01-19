@@ -8,6 +8,7 @@ const MAX_HEIGHT: u32 = 600;
 trait IActions<T> {
     fn start(ref self: T);
     fn tick(ref self: T);
+    fn move_paddle(ref self: T, direction: Direction);
     fn spawn(ref self: T);
     fn move(ref self: T, direction: Direction);
 }
@@ -15,7 +16,10 @@ trait IActions<T> {
 // dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Direction, Position, next_position, next_ball, next_game, next_paddle};
+    use super::{
+        IActions, Direction, Position, next_position, next_ball, next_game, next_paddle,
+        next_paddle_dx
+    };
     use starknet::{ContractAddress, get_caller_address};
     use dojo_starter::models::{Vec2, Moves, DirectionsAvailable, Ball, Veci2, Game, Paddle};
 
@@ -87,6 +91,19 @@ pub mod actions {
 
             let paddle: Paddle = world.read_model(player);
             let next_paddle = next_paddle(paddle);
+            world.write_model(@next_paddle);
+        }
+
+        fn move_paddle(ref self: ContractState, direction: Direction) {
+            let mut world = self.world_default();
+
+            let player = get_caller_address();
+
+            let paddle: Paddle = world.read_model(player);
+
+            let next_paddle = next_paddle_dx(paddle, Option::Some(direction));
+
+            // Write the new position to the world.
             world.write_model(@next_paddle);
         }
 
@@ -245,5 +262,33 @@ fn next_paddle(mut paddle: Paddle) -> Paddle {
             paddle.vec.x += paddle.dx;
         }
     }
+    paddle
+}
+
+fn next_paddle_dx(mut paddle: Paddle, direction: Option<Direction>) -> Paddle {
+    match direction {
+        Option::None => {
+            paddle.dx = 0;
+            paddle.dxnegative = false;
+        },
+        Option::Some(d) => match d {
+            Direction::Left => {
+                paddle.dx = paddle.speed;
+                paddle.dxnegative = true;
+            },
+            Direction::Right => {
+                paddle.dx = paddle.speed;
+                paddle.dxnegative = false;
+            },
+            Direction::Up => {
+                paddle.dx = 0;
+                paddle.dxnegative = false;
+            },
+            Direction::Down => {
+                paddle.dx = 0;
+                paddle.dxnegative = false;
+            },
+        },
+    };
     paddle
 }

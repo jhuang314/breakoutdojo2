@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x337c79e6c78f6d3687fc9e73a2469434c305781e7dd6617b98139229b4e240d",
-      "class_hash": "0x5b90ef862168f7122a10bff430c5e8931fac8d3b0717081a6ef9625f99a0674",
+      "address": "0x12f678eb503ba7e867450d1651a5457ab61f75646076e2b97696fe7d8a7e1fe",
+      "class_hash": "0x6d8a05bec0f99ad21565d2d8e8cc2101f6a96b3970955aae7dfbcdf3ca2d975",
       "abi": [
         {
           "type": "impl",
@@ -1347,6 +1347,18 @@
               "type": "function",
               "name": "tick",
               "inputs": [],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "move_paddle",
+              "inputs": [
+                {
+                  "name": "direction",
+                  "type": "dojo_starter::models::Direction"
+                }
+              ],
               "outputs": [],
               "state_mutability": "external"
             },
@@ -1492,6 +1504,7 @@
       "systems": [
         "start",
         "tick",
+        "move_paddle",
         "spawn",
         "move",
         "upgrade"
@@ -1522,6 +1535,12 @@
       "class_hash": "0x5f79e21312b142fc289d3bd1e0f4c65ac3c4e532252c6fb1ad48b718d892dc",
       "tag": "dojo_starter-Moves",
       "selector": "0x2a29373f1af8348bd366a990eb3a342ef2cbe5e85160539eaca3441a673f468"
+    },
+    {
+      "members": [],
+      "class_hash": "0x2d21c42ba9af48012e45003146271168267ed494f93dca5279fd534365e140b",
+      "tag": "dojo_starter-Paddle",
+      "selector": "0x5530b6c4c99e99b6a9e00a4d53759e3c01f7157246573b8a76b8fc81e50e995"
     },
     {
       "members": [],

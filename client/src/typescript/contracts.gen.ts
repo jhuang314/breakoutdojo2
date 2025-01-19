@@ -25,6 +25,27 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
+	const build_actions_movePaddle_calldata = (direction: CairoCustomEnum): DojoCall => {
+		return {
+			contractName: "actions",
+			entrypoint: "move_paddle",
+			calldata: [direction],
+		};
+	};
+
+	const actions_movePaddle = async (snAccount: Account | AccountInterface, direction: CairoCustomEnum) => {
+		try {
+			return await provider.execute(
+				snAccount,
+				build_actions_movePaddle_calldata(direction),
+				"dojo_starter",
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
 	const build_actions_spawn_calldata = (): DojoCall => {
 		return {
 			contractName: "actions",
@@ -94,6 +115,8 @@ export function setupWorld(provider: DojoProvider) {
 		actions: {
 			move: actions_move,
 			buildMoveCalldata: build_actions_move_calldata,
+			movePaddle: actions_movePaddle,
+			buildMovePaddleCalldata: build_actions_movePaddle_calldata,
 			spawn: actions_spawn,
 			buildSpawnCalldata: build_actions_spawn_calldata,
 			start: actions_start,
