@@ -106,15 +106,15 @@ pub mod actions {
             let next_game = next_game(game);
             // world.write_model(@next_game);
 
-            let ball: Ball = world.read_model(player);
-            // let game_bricks: Game = world.read_model(player);
-            let (next_ball, next_game_bricks) = next_ball(ball, next_game);
-            world.write_model(@next_ball);
-            world.write_model(@next_game_bricks);
-
             let paddle: Paddle = world.read_model(player);
             let next_paddle = next_paddle(paddle);
+
+            let ball: Ball = world.read_model(player);
+            // let game_bricks: Game = world.read_model(player);
+            let (next_ball, next_game_bricks) = next_ball(ball, next_game, next_paddle);
+            world.write_model(@next_ball);
             world.write_model(@next_paddle);
+            world.write_model(@next_game_bricks);
         }
 
         fn move_paddle(ref self: ContractState, direction: Direction) {
@@ -228,7 +228,7 @@ fn next_game(mut game: Game) -> Game {
 }
 
 
-fn next_ball(mut ball: Ball, mut game: Game) -> (Ball, Game) {
+fn next_ball(mut ball: Ball, mut game: Game, paddle: Paddle) -> (Ball, Game) {
     // Calculate the new position of the ball based on its current motion.
 
     if (ball.dxnegative) {
@@ -261,6 +261,16 @@ fn next_ball(mut ball: Ball, mut game: Game) -> (Ball, Game) {
         } else {
             ball.vec.y += ball.dy;
         }
+    }
+
+    // Paddle collision.
+    if (ball.vec.x
+        - ball.size > paddle.vec.x && ball.vec.x
+        + ball.size < paddle.vec.x
+        + paddle.w && ball.vec.y
+        + ball.size > paddle.vec.y) {
+        ball.dy = ball.speed;
+        ball.dynegative = true;
     }
 
     // Brick collision.
