@@ -1,4 +1,4 @@
-use dojo_starter::models::{Direction, Position, Ball, Veci2, Game};
+use dojo_starter::models::{Direction, Position, Ball, Veci2, Game, Paddle};
 
 const MAX_WIDTH: u32 = 800;
 const MAX_HEIGHT: u32 = 600;
@@ -15,9 +15,9 @@ trait IActions<T> {
 // dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Direction, Position, next_position, next_ball, next_game};
+    use super::{IActions, Direction, Position, next_position, next_ball, next_game, next_paddle};
     use starknet::{ContractAddress, get_caller_address};
-    use dojo_starter::models::{Vec2, Moves, DirectionsAvailable, Ball, Veci2, Game};
+    use dojo_starter::models::{Vec2, Moves, DirectionsAvailable, Ball, Veci2, Game, Paddle};
 
     use dojo::model::{ModelStorage, ModelValueStorage};
     use dojo::event::EventStorage;
@@ -57,6 +57,19 @@ pub mod actions {
 
             // Write the new entities to the world.
             world.write_model(@new_ball);
+
+            let new_paddle = Paddle {
+                player,
+                vec: Vec2 { x: 360, y: 580 },
+                w: 80,
+                h: 10,
+                speed: 8,
+                dx: 0,
+                dxnegative: false,
+                visible: true,
+            };
+
+            world.write_model(@new_paddle);
         }
 
         fn tick(ref self: ContractState) {
@@ -70,8 +83,11 @@ pub mod actions {
 
             let ball: Ball = world.read_model(player);
             let next_ball = next_ball(ball);
-
             world.write_model(@next_ball);
+
+            let paddle: Paddle = world.read_model(player);
+            let next_paddle = next_paddle(paddle);
+            world.write_model(@next_paddle);
         }
 
         fn spawn(ref self: ContractState) {
@@ -207,4 +223,27 @@ fn next_ball(mut ball: Ball) -> Ball {
         }
     }
     ball
+}
+
+
+fn next_paddle(mut paddle: Paddle) -> Paddle {
+    // Calculate the new position of the paddle based on its current motion.
+    if (paddle.dxnegative) {
+        // Left wall collsion.
+        if (paddle.vec.x < paddle.dx) {
+            paddle.dxnegative = false;
+            paddle.vec.x = 0;
+        } else {
+            paddle.vec.x -= paddle.dx;
+        }
+    } else {
+        // Right wall collsion.
+        if (paddle.vec.x + paddle.w > MAX_WIDTH) {
+            paddle.dxnegative = true;
+            paddle.vec.x = MAX_WIDTH - paddle.w;
+        } else {
+            paddle.vec.x += paddle.dx;
+        }
+    }
+    paddle
 }
