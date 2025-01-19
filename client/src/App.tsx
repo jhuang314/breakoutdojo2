@@ -92,7 +92,7 @@ function App() {
                         (data[0] as ParsedEntity<SchemaType>).entityId !== "0x0"
                     ) {
                         state.updateEntity(data[0] as ParsedEntity<SchemaType>);
-console.log(data);
+                        console.log(data);
 
                         if (ctx && canvas) {
 
@@ -161,7 +161,7 @@ console.log(data);
     const game = useModel(entityId as string, ModelsMapping.Game);
     const paddle = useModel(entityId as string, ModelsMapping.Paddle);
     const ball = useModel(entityId as string, ModelsMapping.Ball);
-    
+
 
     // Canvas drawing logic.
 
@@ -179,15 +179,32 @@ console.log(data);
         console.log('ball cords', Number(ball.vec.x), Number(ball.vec.y));
     }
 
+    // Draw Bricks
+    const drawBricks = (ctx: CanvasRenderingContext2D) => {
+        if (!game) {
+            return;
+        }
+        game.bricks.forEach(column => {
+            column.forEach(brick => {
+                ctx.beginPath();
+                ctx.rect(brick.vec.x, brick.vec.y, brick.w, brick.h);
+                ctx.fillStyle = brick.visible ? '#0095dd' : 'transparent';
+                ctx.fill();
+                ctx.closePath();
+            });
+        });
+    }
+
     const draw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
         // clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         drawBall(ctx);
         drawPaddle(ctx);
+        drawBricks(ctx);
 
         console.log('brick', game);
-        console.log('brick entity',Object.values(entities)[0]);
+        console.log('brick entity', Object.values(entities)[0]);
     }
 
     // Draw Paddle
