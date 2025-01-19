@@ -9,6 +9,8 @@ import { useAccount } from "@starknet-react/core";
 import { WalletAccount } from "./wallet-account.tsx";
 import { HistoricalEvents } from "./historical-events.tsx";
 import { useDojoSDK, useModel } from "@dojoengine/sdk/react";
+import retry  from "async-retry";
+
 
 /**
  * Main application component that provides game functionality and UI.
@@ -25,6 +27,7 @@ function App() {
 
     const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
     const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+    const [intervalId, setIntervalId] = useState<number>(0);
 
     const { spawn, start } = useSystemCalls();
 
@@ -42,7 +45,9 @@ function App() {
         setCtx(ctx);
 
         console.log('canvas loaded');
-    }, []);
+        // document.addEventListener('keydown', keyDown);
+        // document.addEventListener('keyup', keyUp);
+    }, [client]);
 
     useEffect(() => {
         let unsubscribe: (() => void) | undefined;
@@ -176,7 +181,7 @@ function App() {
         ctx.fill();
         ctx.closePath();
 
-        console.log('ball cords', Number(ball.vec.x), Number(ball.vec.y));
+        // console.log('ball cords', Number(ball.vec.x), Number(ball.vec.y));
     }
 
     // Draw Bricks
@@ -205,8 +210,8 @@ function App() {
         drawBricks(ctx);
 
 
-        console.log('brick', game);
-        console.log('brick entity', Object.values(entities)[0]);
+        // console.log('brick', game);
+        // console.log('brick entity', Object.values(entities)[0]);
     }
 
     // Draw Paddle
@@ -233,13 +238,75 @@ function App() {
         ctx.fillText(`Score: ${score}`, 30, 30);
     }
 
-    const loop = async () => {
-        await client.actions.tick(
-            account!
-        );
+    // NOTE: for some reason the client.actions.movePaddle action is not working (returns undefined txn).
+    const keyDown = async (e) => {
+        const left = new CairoCustomEnum({
+            Left: "()",
+        });
+        const right = new CairoCustomEnum({
+            Right: "()",
+        });
 
-        // Sleep for 10ms
-        setTimeout(loop, 50);
+        if (e.key === 'Right' || e.key === 'ArrowRight') {
+            const txn = await client.actions.movePaddle(
+                account!,
+                right
+            );
+            console.log('right', e.key, txn);
+        } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+            await client.actions.movePaddle(
+                account!,
+                left
+            );
+            console.log('left', e.key, e);
+        } else {
+            console.log('other key', e.key);
+        }
+
+
+    }
+
+    const keyUp = async (e) => {
+        if (
+            e.key === 'Right' ||
+            e.key === 'ArrowRight' ||
+            e.key === 'Left' ||
+            e.key === 'ArrowLeft'
+        ) {
+            // Up stops the paddle.
+            const up = new CairoCustomEnum({
+                Up: "()",
+            });
+            await client.actions.movePaddle(
+                account!,
+                up
+            );
+            console.log('up', e.key, 'asdf');
+
+        }
+    }
+
+    const loop = async () => {
+        if (intervalId !== 0) {
+            clearInterval(intervalId);
+            setIntervalId(0);
+            return;
+        }
+        
+        const i = setInterval(async () => {
+            const txn = await client.actions.tick(
+                account!
+            );
+            console.log('ticking', txn, intervalId);
+        }, 1000);
+        setIntervalId(i);
+    
+        // await client.actions.tick(
+        //     account!
+        // );
+
+        // // Sleep for 10ms
+        // setTimeout(loop, 100);
     }
 
 
@@ -327,11 +394,27 @@ function App() {
                                 <button
                                     className={`${col} h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200`}
                                     key={idx}
-                                    onClick={async () => {
-                                        await client.actions.movePaddle(
-                                            account!,
-                                            direction
-                                        );
+                                    onMouseDown={async () => {
+                                        console.log('mousedown', direction);
+                                        retry(async () => {
+                                            const txn = await client.actions.movePaddle(
+                                                account!,
+                                                direction
+                                            );
+                                            console.log('button hold click txn', txn);
+                                        }, {retries: 100});
+                                    }}
+                                    onMouseUp={async () => {
+                                        console.log('mouseup', direction);
+                                        retry(async () => {
+                                            const txn = await client.actions.movePaddle(
+                                                account!,
+                                                new CairoCustomEnum({
+                                                    Up: "()",
+                                                }),
+                                            );
+                                            console.log('button hold click txn', txn);
+                                        }, {retries: 100});                                        
                                     }}
                                 >
                                     {label}
