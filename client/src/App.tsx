@@ -9,7 +9,7 @@ import { useAccount } from "@starknet-react/core";
 import { WalletAccount } from "./wallet-account.tsx";
 import { HistoricalEvents } from "./historical-events.tsx";
 import { useDojoSDK, useModel } from "@dojoengine/sdk/react";
-import retry  from "async-retry";
+import retry from "async-retry";
 
 
 /**
@@ -69,7 +69,7 @@ function App() {
                                     addAddressPadding(account.address)
                                 )
                             )
-                            
+
                             .entity("Game", (e) =>
                                 e.is(
                                     "player",
@@ -201,7 +201,7 @@ function App() {
         if (game && game.active === false) {
             drawGameOver(ctx);
         }
-        
+
         // console.log('brick', game);
         // console.log('brick entity', Object.values(entities)[0]);
     }
@@ -300,7 +300,7 @@ function App() {
             setIntervalId(0);
             return;
         }
-        
+
         const i = setInterval(async () => {
             const txn = await client.actions.tick(
                 account!
@@ -308,7 +308,7 @@ function App() {
             console.log('ticking', txn, intervalId);
         }, 1000);
         setIntervalId(i);
-    
+
         // await client.actions.tick(
         //     account!
         // );
@@ -323,14 +323,15 @@ function App() {
         <div className="bg-black min-h-screen w-full p-4 sm:p-8">
             <div className="max-w-7xl mx-auto">
                 <WalletAccount />
-                <div className="mt-8 overflow-x-auto">
-                    <canvas id="canvas" width="800" height="600"></canvas>
-                </div>
+                {/* <div className="mt-8 overflow-x-auto">
+                    
+                </div> */}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div className="flex flex-row">
+                    <canvas id="canvas" width="800" height="600"></canvas>
                     <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
-                        <div className="grid grid-cols-3 gap-2 w-full h-48">
-                            <div className="col-start-2">
+                        <div className="flex flex-col gap-2 w-full h-48">
+                            <div className="flex flex-col basis-1/3">
                                 <button
                                     className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
                                     onClick={async () => await start()}
@@ -355,29 +356,13 @@ function App() {
                                 Ticks:{" "}
                                 {game ? `${game.ticks}` : "Need to Start"}
                             </div>
-                            <div className="col-span-3 text-center text-base text-white">
-                                {position
-                                    ? `x: ${position?.vec?.x}, y: ${position?.vec?.y}`
-                                    : "Need to Spawn"}
-                            </div>
-                            <div className="col-span-3 text-center text-base text-white">
-                                {moves && moves.last_direction.isSome()
-                                    ? moves.last_direction.unwrap()
-                                    : ""}
-                            </div>
+
                         </div>
                     </div>
 
                     <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
                         <div className="grid grid-cols-3 gap-2 w-full h-48">
                             {[
-                                {
-                                    direction: new CairoCustomEnum({
-                                        Up: "()",
-                                    }),
-                                    label: "↑",
-                                    col: "col-start-2",
-                                },
                                 {
                                     direction: new CairoCustomEnum({
                                         Left: "()",
@@ -387,17 +372,17 @@ function App() {
                                 },
                                 {
                                     direction: new CairoCustomEnum({
+                                        Up: "()",
+                                    }),
+                                    label: "⏹",
+                                    col: "col-start-2",
+                                },
+                                {
+                                    direction: new CairoCustomEnum({
                                         Right: "()",
                                     }),
                                     label: "→",
                                     col: "col-start-3",
-                                },
-                                {
-                                    direction: new CairoCustomEnum({
-                                        Down: "()",
-                                    }),
-                                    label: "↓",
-                                    col: "col-start-2",
                                 },
                             ].map(({ direction, label, col }, idx) => (
                                 <button
@@ -411,7 +396,7 @@ function App() {
                                                 direction
                                             );
                                             console.log('button hold click txn', txn);
-                                        }, {retries: 100});
+                                        }, { retries: 100 });
                                     }}
                                     onMouseUp={async () => {
                                         console.log('mouseup', direction);
@@ -423,7 +408,7 @@ function App() {
                                                 }),
                                             );
                                             console.log('button hold click txn', txn);
-                                        }, {retries: 100});                                        
+                                        }, { retries: 100 });
                                     }}
                                 >
                                     {label}
@@ -432,80 +417,6 @@ function App() {
                         </div>
                     </div>
 
-                    <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
-                        <div className="grid grid-cols-3 gap-2 w-full h-48">
-                            <div className="col-start-2">
-                                <button
-                                    className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
-                                    onClick={async () => await spawn()}
-                                >
-                                    +
-                                </button>
-                            </div>
-                            <div className="col-span-3 text-center text-base text-white">
-                                Moves Left:{" "}
-                                {moves ? `${moves.remaining}` : "Need to Spawn"}
-                            </div>
-                            <div className="col-span-3 text-center text-base text-white">
-                                {position
-                                    ? `x: ${position?.vec?.x}, y: ${position?.vec?.y}`
-                                    : "Need to Spawn"}
-                            </div>
-                            <div className="col-span-3 text-center text-base text-white">
-                                {moves && moves.last_direction.isSome()
-                                    ? moves.last_direction.unwrap()
-                                    : ""}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
-                        <div className="grid grid-cols-3 gap-2 w-full h-48">
-                            {[
-                                {
-                                    direction: new CairoCustomEnum({
-                                        Up: "()",
-                                    }),
-                                    label: "↑",
-                                    col: "col-start-2",
-                                },
-                                {
-                                    direction: new CairoCustomEnum({
-                                        Left: "()",
-                                    }),
-                                    label: "←",
-                                    col: "col-start-1",
-                                },
-                                {
-                                    direction: new CairoCustomEnum({
-                                        Right: "()",
-                                    }),
-                                    label: "→",
-                                    col: "col-start-3",
-                                },
-                                {
-                                    direction: new CairoCustomEnum({
-                                        Down: "()",
-                                    }),
-                                    label: "↓",
-                                    col: "col-start-2",
-                                },
-                            ].map(({ direction, label, col }, idx) => (
-                                <button
-                                    className={`${col} h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200`}
-                                    key={idx}
-                                    onClick={async () => {
-                                        await client.actions.move(
-                                            account!,
-                                            direction
-                                        );
-                                    }}
-                                >
-                                    {label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
                 </div>
 
                 <div className="mt-8 overflow-x-auto">
@@ -575,82 +486,7 @@ function App() {
                     </table>
                 </div>
 
-                <div className="mt-8 overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-700">
-                        <thead>
-                            <tr className="bg-gray-800 text-white">
-                                <th className="border border-gray-700 p-2">
-                                    Entity ID
-                                </th>
-                                <th className="border border-gray-700 p-2">
-                                    Player
-                                </th>
-                                <th className="border border-gray-700 p-2">
-                                    Position X
-                                </th>
-                                <th className="border border-gray-700 p-2">
-                                    Position Y
-                                </th>
-                                <th className="border border-gray-700 p-2">
-                                    Can Move
-                                </th>
-                                <th className="border border-gray-700 p-2">
-                                    Last Direction
-                                </th>
-                                <th className="border border-gray-700 p-2">
-                                    Remaining Moves
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.entries(entities).map(
-                                ([entityId, entity]) => {
-                                    const position =
-                                        entity.models.dojo_starter.Position;
-                                    const moves =
-                                        entity.models.dojo_starter.Moves;
-                                    const lastDirection =
-                                        moves?.last_direction?.isSome()
-                                            ? moves.last_direction?.unwrap()
-                                            : "N/A";
 
-                                    return (
-                                        <tr
-                                            key={entityId}
-                                            className="text-gray-300"
-                                        >
-                                            <td className="border border-gray-700 p-2">
-                                                {entityId}
-                                            </td>
-                                            <td className="border border-gray-700 p-2">
-                                                {position?.player ?? "N/A"}
-                                            </td>
-                                            <td className="border border-gray-700 p-2">
-                                                {position?.vec?.x.toString() ??
-                                                    "N/A"}
-                                            </td>
-                                            <td className="border border-gray-700 p-2">
-                                                {position?.vec?.y.toString() ??
-                                                    "N/A"}
-                                            </td>
-                                            <td className="border border-gray-700 p-2">
-                                                {moves?.can_move?.toString() ??
-                                                    "N/A"}
-                                            </td>
-                                            <td className="border border-gray-700 p-2">
-                                                {lastDirection}
-                                            </td>
-                                            <td className="border border-gray-700 p-2">
-                                                {moves?.remaining?.toString() ??
-                                                    "N/A"}
-                                            </td>
-                                        </tr>
-                                    );
-                                }
-                            )}
-                        </tbody>
-                    </table>
-                </div>
 
                 {/* // Here sdk is passed as props but this can be done via contexts */}
                 <HistoricalEvents />
