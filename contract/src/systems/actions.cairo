@@ -248,7 +248,6 @@ fn next_paddle(mut paddle: Paddle) -> Paddle {
     if (paddle.dxnegative) {
         // Left wall collsion.
         if (paddle.vec.x < paddle.dx) {
-            paddle.dxnegative = false;
             paddle.vec.x = 0;
         } else {
             paddle.vec.x -= paddle.dx;
@@ -256,7 +255,6 @@ fn next_paddle(mut paddle: Paddle) -> Paddle {
     } else {
         // Right wall collsion.
         if (paddle.vec.x + paddle.w > MAX_WIDTH) {
-            paddle.dxnegative = true;
             paddle.vec.x = MAX_WIDTH - paddle.w;
         } else {
             paddle.vec.x += paddle.dx;

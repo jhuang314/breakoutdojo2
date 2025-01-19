@@ -70,6 +70,12 @@ function App() {
                                     addAddressPadding(account.address)
                                 )
                             )
+                            .entity("Paddle", (e) =>
+                                e.is(
+                                    "player",
+                                    addAddressPadding(account.address)
+                                )
+                            )
                             .entity("Game", (e) =>
                                 e.is(
                                     "player",
@@ -197,7 +203,7 @@ function App() {
             account!
         );
         // Sleep for 10ms
-        setTimeout(loop, 1);
+        setTimeout(loop, 50);
     }
 
 
@@ -247,6 +253,54 @@ function App() {
                                     ? moves.last_direction.unwrap()
                                     : ""}
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
+                        <div className="grid grid-cols-3 gap-2 w-full h-48">
+                            {[
+                                {
+                                    direction: new CairoCustomEnum({
+                                        Up: "()",
+                                    }),
+                                    label: "↑",
+                                    col: "col-start-2",
+                                },
+                                {
+                                    direction: new CairoCustomEnum({
+                                        Left: "()",
+                                    }),
+                                    label: "←",
+                                    col: "col-start-1",
+                                },
+                                {
+                                    direction: new CairoCustomEnum({
+                                        Right: "()",
+                                    }),
+                                    label: "→",
+                                    col: "col-start-3",
+                                },
+                                {
+                                    direction: new CairoCustomEnum({
+                                        Down: "()",
+                                    }),
+                                    label: "↓",
+                                    col: "col-start-2",
+                                },
+                            ].map(({ direction, label, col }, idx) => (
+                                <button
+                                    className={`${col} h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200`}
+                                    key={idx}
+                                    onClick={async () => {
+                                        await client.actions.movePaddle(
+                                            account!,
+                                            direction
+                                        );
+                                    }}
+                                >
+                                    {label}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
