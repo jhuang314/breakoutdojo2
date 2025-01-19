@@ -8,6 +8,7 @@ pub struct Game {
     pub ticks: u32,
     pub bricks: Array<Array<Brick>>,
     pub score: u32,
+    pub active: bool,
     // pub bricks: [[Brick; 5]; 9],
    
 }

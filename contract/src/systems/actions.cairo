@@ -64,7 +64,7 @@ pub mod actions {
                     bricks.append(brickCol);
                 };
 
-            let game = Game { player, ticks: 1, bricks, score: 0 };
+            let game = Game { player, ticks: 1, bricks, score: 0, active: true };
 
             world.write_model(@game);
 
@@ -103,6 +103,11 @@ pub mod actions {
             let player = get_caller_address();
 
             let game: Game = world.read_model(player);
+
+            // if (!game.active) {
+            //     return;
+            // }
+
             let next_game = next_game(game);
             // world.write_model(@next_game);
 
@@ -258,6 +263,8 @@ fn next_ball(mut ball: Ball, mut game: Game, paddle: Paddle) -> (Ball, Game) {
         // Bottom wall collsion.
         if (ball.vec.y + ball.size > MAX_HEIGHT) {
             ball.dynegative = true;
+            // Ball hitting the bottom is game over.
+            game.active = false;
         } else {
             ball.vec.y += ball.dy;
         }
@@ -314,6 +321,9 @@ fn next_ball(mut ball: Ball, mut game: Game, paddle: Paddle) -> (Ball, Game) {
         };
 
     game.bricks = updated_bricks;
+    if (game.score == 27) {
+        game.active = false;
+    }
 
     (ball, game)
 }

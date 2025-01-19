@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x1cb7f59bc205824d1fc4320a561647a90c6cb493bcb33693c6148786701a8de",
-      "class_hash": "0x78ce762b66f86ebbdcbbe4a4eeefee5ebe9c974ae1defa5706d43379304ee0d",
+      "address": "0x3c8b20720bc501a42530fcd4654275ce3aad0ca3b8b1b0e78a1a727c4b0208d",
+      "class_hash": "0x26ec8500185013bed10d8b866ed163f123c1d7f95241d927f5d4d8bc7902e0e",
       "abi": [
         {
           "type": "impl",
@@ -1532,7 +1532,7 @@
     },
     {
       "members": [],
-      "class_hash": "0x6a9d43c688ac1c95de9015257b421f98dbb7ba9d5e7222a03ddd1a3b395c2f2",
+      "class_hash": "0x63026e8969f7ae81b8660c05420414fa0961849d4eeb91ddedb2a7d0a224de8",
       "tag": "dojo_starter-Game",
       "selector": "0x19e11cf1403e104998a158f43ec6ae232dc65cf5445bcb29fb9fb5b7bb6c171"
     },

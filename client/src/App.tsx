@@ -208,8 +208,11 @@ function App() {
         drawBall(ctx);
         drawPaddle(ctx);
         drawBricks(ctx);
-
-
+        console.log(game, game.active);
+        if (game && game.active === false) {
+            drawGameOver(ctx);
+        }
+        
         // console.log('brick', game);
         // console.log('brick entity', Object.values(entities)[0]);
     }
@@ -237,6 +240,22 @@ function App() {
         ctx.fillStyle = "#0095dd";
         ctx.fillText(`Score: ${score}`, 30, 30);
     }
+
+    // Draw Game Over
+    function drawGameOver(ctx: CanvasRenderingContext2D) {
+        if (!game) {
+            return;
+        }
+        if (game.active) {
+            return;
+        }
+
+        const score = game.score || 0;
+        ctx.font = "40px Arial";
+        ctx.fillStyle = "#0095dd";
+        ctx.fillText(`Game Over! Score: ${score}`, 200, 300);
+    }
+
 
     // NOTE: for some reason the client.actions.movePaddle action is not working (returns undefined txn).
     const keyDown = async (e) => {
