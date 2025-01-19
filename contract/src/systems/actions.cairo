@@ -104,11 +104,13 @@ pub mod actions {
 
             let game: Game = world.read_model(player);
             let next_game = next_game(game);
-            world.write_model(@next_game);
+            // world.write_model(@next_game);
 
             let ball: Ball = world.read_model(player);
-            let next_ball = next_ball(ball);
+            // let game_bricks: Game = world.read_model(player);
+            let (next_ball, next_game_bricks) = next_ball(ball, next_game);
             world.write_model(@next_ball);
+            world.write_model(@next_game_bricks);
 
             let paddle: Paddle = world.read_model(player);
             let next_paddle = next_paddle(paddle);
@@ -226,7 +228,7 @@ fn next_game(mut game: Game) -> Game {
 }
 
 
-fn next_ball(mut ball: Ball) -> Ball {
+fn next_ball(mut ball: Ball, mut game: Game) -> (Ball, Game) {
     // Calculate the new position of the ball based on its current motion.
 
     if (ball.dxnegative) {
@@ -260,7 +262,50 @@ fn next_ball(mut ball: Ball) -> Ball {
             ball.vec.y += ball.dy;
         }
     }
-    ball
+
+    // Brick collision.
+
+    let mut updated_bricks = ArrayTrait::<Array<Brick>>::new();
+
+    for col in 0
+        ..9_u32 {
+            let mut brickCol = ArrayTrait::<Brick>::new();
+            for row in 0
+                ..3_u32 {
+                    let brick = game.bricks.at(col).at(row);
+                    if (*brick.visible) {
+                        let leftCollision: bool = (ball.vec.x - ball.size > *brick.vec.x);
+                        let rightCollision: bool = (ball.vec.x
+                            + ball.size < *brick.vec.x
+                            + *brick.w);
+                        let topCollision: bool = (ball.vec.y + ball.size > *brick.vec.y);
+                        let bottomCollision: bool = (ball.vec.y
+                            - ball.size < *brick.vec.y
+                            + *brick.h);
+
+                        if (leftCollision && rightCollision && topCollision && bottomCollision) {
+                            if (ball.dynegative) {
+                                ball.dynegative = false;
+                            } else {
+                                ball.dynegative = true;
+                            }
+                            let removed_brick = remove_brick(*brick);
+                            game.score += 1;
+                            brickCol.append(removed_brick);
+                        } else {
+                            brickCol.append(*brick);
+                        }
+                    } else {
+                        // Brick is not visible, so we can just append it to the new array.
+                        brickCol.append(*brick);
+                    }
+                };
+            updated_bricks.append(brickCol);
+        };
+
+    game.bricks = updated_bricks;
+
+    (ball, game)
 }
 
 
@@ -310,4 +355,9 @@ fn next_paddle_dx(mut paddle: Paddle, direction: Option<Direction>) -> Paddle {
         },
     };
     paddle
+}
+
+fn remove_brick(mut brick: Brick) -> Brick {
+    brick.visible = false;
+    brick
 }
