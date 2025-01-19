@@ -32,6 +32,8 @@ export interface BallValue {
 // Type definition for `dojo_starter::models::Brick` struct
 export interface Brick {
 	player: string;
+	row: BigNumberish;
+	col: BigNumberish;
 	vec: Vec2;
 	w: BigNumberish;
 	h: BigNumberish;
@@ -190,8 +192,10 @@ export const schema: SchemaType = {
 			visible: false,
 		},
 		Brick: {
-			fieldOrder: ['player', 'vec', 'w', 'h', 'visible'],
+			fieldOrder: ['player', 'row', 'col', 'vec', 'w', 'h', 'visible'],
 			player: "",
+			row: 0,
+			col: 0,
 		vec: { x: 0, y: 0, },
 			w: 0,
 			h: 0,

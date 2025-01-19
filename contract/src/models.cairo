@@ -42,6 +42,10 @@ pub struct Paddle {
 pub struct Brick {
     #[key]
     pub player: ContractAddress,
+    #[key]
+    pub row: u32,
+    #[key]
+    pub col: u32,
     pub vec: Vec2,
     pub w: u32,
     pub h: u32,

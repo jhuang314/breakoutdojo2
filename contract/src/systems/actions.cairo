@@ -1,7 +1,14 @@
-use dojo_starter::models::{Direction, Position, Ball, Veci2, Game, Paddle};
+use dojo_starter::models::{Direction, Position, Ball, Veci2, Game, Paddle, Brick};
 
 const MAX_WIDTH: u32 = 800;
 const MAX_HEIGHT: u32 = 600;
+const BRICK_OFFSET_X: u32 = 45;
+const BRICK_OFFSET_Y: u32 = 60;
+const BRICK_ROWS: u32 = 9;
+const BRICK_COLS: u32 = 5;
+const BRICK_WIDTH: u32 = 70;
+const BRICK_HEIGHT: u32 = 20;
+const BRICK_PADDING: u32 = 10;
 
 // define the interface
 #[starknet::interface]
@@ -21,7 +28,7 @@ pub mod actions {
         next_paddle_dx
     };
     use starknet::{ContractAddress, get_caller_address};
-    use dojo_starter::models::{Vec2, Moves, DirectionsAvailable, Ball, Veci2, Game, Paddle};
+    use dojo_starter::models::{Vec2, Moves, DirectionsAvailable, Ball, Veci2, Game, Paddle, Brick};
 
     use dojo::model::{ModelStorage, ModelValueStorage};
     use dojo::event::EventStorage;
@@ -74,6 +81,20 @@ pub mod actions {
             };
 
             world.write_model(@new_paddle);
+
+            for row in 0
+                ..9_u32 {
+                    for col in 0
+                        ..5_u32 {
+                            let x = row * (80) + 45;
+                            let y = col * (30) + 60;
+
+                            let brick = Brick {
+                                player, row, col, vec: Vec2 { x, y }, w: 70, h: 20, visible: true
+                            };
+                            world.write_model(@brick);
+                        }
+                }
         }
 
         fn tick(ref self: ContractState) {
