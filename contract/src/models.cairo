@@ -7,6 +7,7 @@ pub struct Game {
     pub player: ContractAddress,
     pub ticks: u32,
     pub bricks: Array<Array<Brick>>,
+    pub score: u32,
     // pub bricks: [[Brick; 5]; 9],
    
 }

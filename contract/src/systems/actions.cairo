@@ -64,7 +64,7 @@ pub mod actions {
                     bricks.append(brickCol);
                 };
 
-            let game = Game { player, ticks: 1, bricks, };
+            let game = Game { player, ticks: 1, bricks, score: 0 };
 
             world.write_model(@game);
 

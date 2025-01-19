@@ -74,12 +74,14 @@ export interface Game {
 	player: string;
 	ticks: BigNumberish;
 	bricks: Array<Array<Brick>>;
+	score: BigNumberish;
 }
 
 // Type definition for `dojo_starter::models::GameValue` struct
 export interface GameValue {
 	ticks: BigNumberish;
 	bricks: Array<Array<Brick>>;
+	score: BigNumberish;
 }
 
 // Type definition for `dojo_starter::models::Moves` struct
@@ -248,15 +250,17 @@ export const schema: SchemaType = {
 				Down: undefined, })],
 		},
 		Game: {
-			fieldOrder: ['player', 'ticks', 'bricks'],
+			fieldOrder: ['player', 'ticks', 'bricks', 'score'],
 			player: "",
 			ticks: 0,
 			bricks: [[{ row: 0, col: 0, vec: { x: 0, y: 0, }, w: 0, h: 0, visible: false, }]],
+			score: 0,
 		},
 		GameValue: {
-			fieldOrder: ['ticks', 'bricks'],
+			fieldOrder: ['ticks', 'bricks', 'score'],
 			ticks: 0,
 			bricks: [[{ row: 0, col: 0, vec: { x: 0, y: 0, }, w: 0, h: 0, visible: false, }]],
+			score: 0,
 		},
 		Moves: {
 			fieldOrder: ['player', 'remaining', 'last_direction', 'can_move'],
