@@ -202,6 +202,7 @@ function App() {
         drawBall(ctx);
         drawPaddle(ctx);
         drawBricks(ctx);
+        drawScore(ctx, canvas);
 
         console.log('brick', game);
         console.log('brick entity', Object.values(entities)[0]);
@@ -217,6 +218,16 @@ function App() {
         ctx.fillStyle = paddle.visible ? '#0095dd' : 'transparent';
         ctx.fill();
         ctx.closePath();
+    }
+
+    // Draw Score
+    function drawScore(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+        if (!game) {
+            return;
+        }
+        const score = game.score || 0;
+        ctx.font = "20px Arial";
+        ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
     }
 
     const loop = async () => {
