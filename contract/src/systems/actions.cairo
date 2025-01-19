@@ -4,11 +4,7 @@ const MAX_WIDTH: u32 = 800;
 const MAX_HEIGHT: u32 = 600;
 const BRICK_OFFSET_X: u32 = 45;
 const BRICK_OFFSET_Y: u32 = 60;
-const BRICK_ROWS: u32 = 9;
-const BRICK_COLS: u32 = 5;
-const BRICK_WIDTH: u32 = 70;
-const BRICK_HEIGHT: u32 = 20;
-const BRICK_PADDING: u32 = 10;
+
 
 // define the interface
 #[starknet::interface]
@@ -50,7 +46,25 @@ pub mod actions {
             // Get the address of the current caller, possibly the player's address.
             let player = get_caller_address();
 
-            let game = Game { player, ticks: 1 };
+            let mut bricks = ArrayTrait::<Array<Brick>>::new();
+
+            for col in 0
+                ..9_u32 {
+                    let mut brickCol = ArrayTrait::<Brick>::new();
+                    for row in 0
+                        ..3_u32 {
+                            let x = col * (80) + 45;
+                            let y = row * (30) + 60;
+
+                            let brick = Brick {
+                                row, col, vec: Vec2 { x, y }, w: 70, h: 20, visible: true
+                            };
+                            brickCol.append(brick);
+                        };
+                    bricks.append(brickCol);
+                };
+
+            let game = Game { player, ticks: 1, bricks, };
 
             world.write_model(@game);
 
@@ -81,20 +95,6 @@ pub mod actions {
             };
 
             world.write_model(@new_paddle);
-
-            for row in 0
-                ..9_u32 {
-                    for col in 0
-                        ..5_u32 {
-                            let x = row * (80) + 45;
-                            let y = col * (30) + 60;
-
-                            let brick = Brick {
-                                player, row, col, vec: Vec2 { x, y }, w: 70, h: 20, visible: true
-                            };
-                            world.write_model(@brick);
-                        }
-                }
         }
 
         fn tick(ref self: ContractState) {

@@ -1,11 +1,14 @@
 use starknet::{ContractAddress};
 
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive( Drop, Serde, Debug)]
 #[dojo::model]
 pub struct Game {
     #[key]
     pub player: ContractAddress,
     pub ticks: u32,
+    pub bricks: Array<Array<Brick>>,
+    // pub bricks: [[Brick; 5]; 9],
+   
 }
 
 #[derive(Copy, Drop, Serde, Debug)]
@@ -39,7 +42,7 @@ pub struct Paddle {
 
 #[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
-pub struct Brick {
+pub struct Brick2 {
     #[key]
     pub player: ContractAddress,
     #[key]
@@ -92,6 +95,16 @@ pub enum Direction {
 pub struct Vec2 {
     pub x: u32,
     pub y: u32
+}
+
+#[derive(Copy, Drop, Serde, IntrospectPacked, Debug)]
+pub struct Brick {
+    pub row: u32,
+    pub col: u32,
+    pub vec: Vec2,
+    pub w: u32,
+    pub h: u32,
+    pub visible: bool,
 }
 
 #[derive(Copy, Drop, Serde, IntrospectPacked, Debug)]

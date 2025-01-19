@@ -92,7 +92,7 @@ function App() {
                         (data[0] as ParsedEntity<SchemaType>).entityId !== "0x0"
                     ) {
                         state.updateEntity(data[0] as ParsedEntity<SchemaType>);
-
+console.log(data);
 
                         if (ctx && canvas) {
 
@@ -161,6 +161,7 @@ function App() {
     const game = useModel(entityId as string, ModelsMapping.Game);
     const paddle = useModel(entityId as string, ModelsMapping.Paddle);
     const ball = useModel(entityId as string, ModelsMapping.Ball);
+    
 
     // Canvas drawing logic.
 
@@ -184,6 +185,9 @@ function App() {
 
         drawBall(ctx);
         drawPaddle(ctx);
+
+        console.log('brick', game);
+        console.log('brick entity',Object.values(entities)[0]);
     }
 
     // Draw Paddle
@@ -202,6 +206,7 @@ function App() {
         await client.actions.tick(
             account!
         );
+
         // Sleep for 10ms
         setTimeout(loop, 50);
     }

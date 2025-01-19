@@ -31,6 +31,16 @@ export interface BallValue {
 
 // Type definition for `dojo_starter::models::Brick` struct
 export interface Brick {
+	row: BigNumberish;
+	col: BigNumberish;
+	vec: Vec2;
+	w: BigNumberish;
+	h: BigNumberish;
+	visible: boolean;
+}
+
+// Type definition for `dojo_starter::models::Brick2` struct
+export interface Brick2 {
 	player: string;
 	row: BigNumberish;
 	col: BigNumberish;
@@ -40,8 +50,8 @@ export interface Brick {
 	visible: boolean;
 }
 
-// Type definition for `dojo_starter::models::BrickValue` struct
-export interface BrickValue {
+// Type definition for `dojo_starter::models::Brick2Value` struct
+export interface Brick2Value {
 	vec: Vec2;
 	w: BigNumberish;
 	h: BigNumberish;
@@ -63,11 +73,13 @@ export interface DirectionsAvailableValue {
 export interface Game {
 	player: string;
 	ticks: BigNumberish;
+	bricks: Array<Array<Brick>>;
 }
 
 // Type definition for `dojo_starter::models::GameValue` struct
 export interface GameValue {
 	ticks: BigNumberish;
+	bricks: Array<Array<Brick>>;
 }
 
 // Type definition for `dojo_starter::models::Moves` struct
@@ -150,7 +162,8 @@ export interface SchemaType extends ISchemaType {
 		Ball: WithFieldOrder<Ball>,
 		BallValue: WithFieldOrder<BallValue>,
 		Brick: WithFieldOrder<Brick>,
-		BrickValue: WithFieldOrder<BrickValue>,
+		Brick2: WithFieldOrder<Brick2>,
+		Brick2Value: WithFieldOrder<Brick2Value>,
 		DirectionsAvailable: WithFieldOrder<DirectionsAvailable>,
 		DirectionsAvailableValue: WithFieldOrder<DirectionsAvailableValue>,
 		Game: WithFieldOrder<Game>,
@@ -192,6 +205,15 @@ export const schema: SchemaType = {
 			visible: false,
 		},
 		Brick: {
+			fieldOrder: ['row', 'col', 'vec', 'w', 'h', 'visible'],
+			row: 0,
+			col: 0,
+		vec: { x: 0, y: 0, },
+			w: 0,
+			h: 0,
+			visible: false,
+		},
+		Brick2: {
 			fieldOrder: ['player', 'row', 'col', 'vec', 'w', 'h', 'visible'],
 			player: "",
 			row: 0,
@@ -201,7 +223,7 @@ export const schema: SchemaType = {
 			h: 0,
 			visible: false,
 		},
-		BrickValue: {
+		Brick2Value: {
 			fieldOrder: ['vec', 'w', 'h', 'visible'],
 		vec: { x: 0, y: 0, },
 			w: 0,
@@ -226,13 +248,15 @@ export const schema: SchemaType = {
 				Down: undefined, })],
 		},
 		Game: {
-			fieldOrder: ['player', 'ticks'],
+			fieldOrder: ['player', 'ticks', 'bricks'],
 			player: "",
 			ticks: 0,
+			bricks: [[{ row: 0, col: 0, vec: { x: 0, y: 0, }, w: 0, h: 0, visible: false, }]],
 		},
 		GameValue: {
-			fieldOrder: ['ticks'],
+			fieldOrder: ['ticks', 'bricks'],
 			ticks: 0,
+			bricks: [[{ row: 0, col: 0, vec: { x: 0, y: 0, }, w: 0, h: 0, visible: false, }]],
 		},
 		Moves: {
 			fieldOrder: ['player', 'remaining', 'last_direction', 'can_move'],
@@ -305,7 +329,8 @@ export enum ModelsMapping {
 	Ball = 'dojo_starter-Ball',
 	BallValue = 'dojo_starter-BallValue',
 	Brick = 'dojo_starter-Brick',
-	BrickValue = 'dojo_starter-BrickValue',
+	Brick2 = 'dojo_starter-Brick2',
+	Brick2Value = 'dojo_starter-Brick2Value',
 	Direction = 'dojo_starter-Direction',
 	DirectionsAvailable = 'dojo_starter-DirectionsAvailable',
 	DirectionsAvailableValue = 'dojo_starter-DirectionsAvailableValue',

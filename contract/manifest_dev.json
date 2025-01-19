@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x12f678eb503ba7e867450d1651a5457ab61f75646076e2b97696fe7d8a7e1fe",
-      "class_hash": "0x6d8a05bec0f99ad21565d2d8e8cc2101f6a96b3970955aae7dfbcdf3ca2d975",
+      "address": "0x652292fe08f1353d17e24832c10fb062f5e42fdb69b873c35bf495c0d2b7724",
+      "class_hash": "0x5f402e614c3699837ad8fdd28bf1fd91e1057d68add14cf64ac19c0d8090c80",
       "abi": [
         {
           "type": "impl",
@@ -1520,13 +1520,19 @@
     },
     {
       "members": [],
+      "class_hash": "0x62231ba6bc9e89e28bf2d8146bfe8ec0a405bf4361e3cd2e28327690a8d10d",
+      "tag": "dojo_starter-Brick2",
+      "selector": "0x52b3ed8ac640f963128d9f7ed782f327a09906e844a26776c963bf5398ef286"
+    },
+    {
+      "members": [],
       "class_hash": "0x3f52c6cf17db224f4e7f88629adf7e907ff110baa0616c7e8ef17c5aecf1b1b",
       "tag": "dojo_starter-DirectionsAvailable",
       "selector": "0x77844f1facb51e60e546a9832d56c6bd04fa23be4fd5b57290caae5e9a3c1e4"
     },
     {
       "members": [],
-      "class_hash": "0x3ca6183ad074b5ad1430c742c81353dd3ca04d0a8a9501e48e023ee3c4821b0",
+      "class_hash": "0x190b0ed916af0de41ab331f43ae12f66426995ff11b448d182987ecfdfb47ba",
       "tag": "dojo_starter-Game",
       "selector": "0x19e11cf1403e104998a158f43ec6ae232dc65cf5445bcb29fb9fb5b7bb6c171"
     },
