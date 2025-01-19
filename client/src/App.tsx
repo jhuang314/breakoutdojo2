@@ -70,6 +70,12 @@ function App() {
                                     addAddressPadding(account.address)
                                 )
                             )
+                            .entity("Game", (e) =>
+                                e.is(
+                                    "player",
+                                    addAddressPadding(account.address)
+                                )
+                            )
                     )
                     .build(),
                 callback: ({ error, data }) => {
@@ -86,7 +92,7 @@ function App() {
 
                             draw(ctx, canvas);
                         }
-                    
+
                     }
                 },
             });
@@ -158,6 +164,8 @@ function App() {
         ctx.fillStyle = ball.visible ? '#0095dd' : 'transparent';
         ctx.fill();
         ctx.closePath();
+
+        console.log('ball cords', Number(ball.vec.x), Number(ball.vec.y));
     }
 
     const draw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
@@ -166,6 +174,15 @@ function App() {
 
         drawBall(ctx);
     }
+
+    const loop = async () => {
+        await client.actions.tick(
+            account!
+        );
+        // Sleep for 10ms
+        setTimeout(loop, 1);
+    }
+        
 
 
     return (
@@ -194,6 +211,10 @@ function App() {
                                             account!
                                         );
                                     }}>Tick</button>
+
+                                <button
+                                    className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
+                                    onClick={loop}>Loop</button>
                             </div>
                             <div className="col-span-3 text-center text-base text-white">
                                 Ticks:{" "}
@@ -299,6 +320,9 @@ function App() {
                                     Player
                                 </th>
                                 <th className="border border-gray-700 p-2">
+                                    Ticks
+                                </th>
+                                <th className="border border-gray-700 p-2">
                                     Ball X
                                 </th>
                                 <th className="border border-gray-700 p-2">
@@ -326,6 +350,9 @@ function App() {
                                             </td>
                                             <td className="border border-gray-700 p-2">
                                                 {position?.player ?? "N/A"}
+                                            </td>
+                                            <td className="border border-gray-700 p-2">
+                                                {game?.ticks ?? "N/A"}
                                             </td>
                                             <td className="border border-gray-700 p-2">
                                                 {ball?.vec?.x.toString() ??

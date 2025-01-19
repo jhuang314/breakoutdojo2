@@ -1,4 +1,4 @@
-use dojo_starter::models::{Direction, Position, Ball, Veci2};
+use dojo_starter::models::{Direction, Position, Ball, Veci2, Game};
 
 const MAX_WIDTH: u32 = 800;
 const MAX_HEIGHT: u32 = 600;
@@ -15,7 +15,7 @@ trait IActions<T> {
 // dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Direction, Position, next_position, next_ball};
+    use super::{IActions, Direction, Position, next_position, next_ball, next_game};
     use starknet::{ContractAddress, get_caller_address};
     use dojo_starter::models::{Vec2, Moves, DirectionsAvailable, Ball, Veci2, Game};
 
@@ -63,6 +63,10 @@ pub mod actions {
             let mut world = self.world_default();
 
             let player = get_caller_address();
+
+            let game: Game = world.read_model(player);
+            let next_game = next_game(game);
+            world.write_model(@next_game);
 
             let ball: Ball = world.read_model(player);
             let next_ball = next_ball(ball);
@@ -159,6 +163,12 @@ fn next_position(mut position: Position, direction: Option<Direction>) -> Positi
         }
     };
     position
+}
+
+fn next_game(mut game: Game) -> Game {
+    let mut new_game = game;
+    new_game.ticks += 1;
+    new_game
 }
 
 
