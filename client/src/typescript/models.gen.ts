@@ -29,6 +29,23 @@ export interface BallValue {
 	visible: boolean;
 }
 
+// Type definition for `dojo_starter::models::Brick` struct
+export interface Brick {
+	player: string;
+	vec: Vec2;
+	w: BigNumberish;
+	h: BigNumberish;
+	visible: boolean;
+}
+
+// Type definition for `dojo_starter::models::BrickValue` struct
+export interface BrickValue {
+	vec: Vec2;
+	w: BigNumberish;
+	h: BigNumberish;
+	visible: boolean;
+}
+
 // Type definition for `dojo_starter::models::DirectionsAvailable` struct
 export interface DirectionsAvailable {
 	player: string;
@@ -130,6 +147,8 @@ export interface SchemaType extends ISchemaType {
 	dojo_starter: {
 		Ball: WithFieldOrder<Ball>,
 		BallValue: WithFieldOrder<BallValue>,
+		Brick: WithFieldOrder<Brick>,
+		BrickValue: WithFieldOrder<BrickValue>,
 		DirectionsAvailable: WithFieldOrder<DirectionsAvailable>,
 		DirectionsAvailableValue: WithFieldOrder<DirectionsAvailableValue>,
 		Game: WithFieldOrder<Game>,
@@ -168,6 +187,21 @@ export const schema: SchemaType = {
 			dy: 0,
 			dxnegative: false,
 			dynegative: false,
+			visible: false,
+		},
+		Brick: {
+			fieldOrder: ['player', 'vec', 'w', 'h', 'visible'],
+			player: "",
+		vec: { x: 0, y: 0, },
+			w: 0,
+			h: 0,
+			visible: false,
+		},
+		BrickValue: {
+			fieldOrder: ['vec', 'w', 'h', 'visible'],
+		vec: { x: 0, y: 0, },
+			w: 0,
+			h: 0,
 			visible: false,
 		},
 		DirectionsAvailable: {
@@ -266,6 +300,8 @@ export const schema: SchemaType = {
 export enum ModelsMapping {
 	Ball = 'dojo_starter-Ball',
 	BallValue = 'dojo_starter-BallValue',
+	Brick = 'dojo_starter-Brick',
+	BrickValue = 'dojo_starter-BrickValue',
 	Direction = 'dojo_starter-Direction',
 	DirectionsAvailable = 'dojo_starter-DirectionsAvailable',
 	DirectionsAvailableValue = 'dojo_starter-DirectionsAvailableValue',

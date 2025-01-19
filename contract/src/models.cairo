@@ -39,6 +39,17 @@ pub struct Paddle {
 
 #[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
+pub struct Brick {
+    #[key]
+    pub player: ContractAddress,
+    pub vec: Vec2,
+    pub w: u32,
+    pub h: u32,
+    pub visible: bool,
+}
+
+#[derive(Copy, Drop, Serde, Debug)]
+#[dojo::model]
 pub struct Moves {
     #[key]
     pub player: ContractAddress,
