@@ -153,12 +153,16 @@ function App() {
     const moves = useModel(entityId as string, ModelsMapping.Moves);
     const position = useModel(entityId as string, ModelsMapping.Position);
     const game = useModel(entityId as string, ModelsMapping.Game);
+    const paddle = useModel(entityId as string, ModelsMapping.Paddle);
+    const ball = useModel(entityId as string, ModelsMapping.Ball);
 
     // Canvas drawing logic.
 
     // Draw ball
     const drawBall = (ctx: CanvasRenderingContext2D) => {
-        const ball = Object.values(entities)[0].models.dojo_starter.Ball;
+        if (!ball) {
+            return;
+        }
         ctx.beginPath();
         ctx.arc(Number(ball.vec.x), Number(ball.vec.y), Number(ball.size), 0, Math.PI * 2);
         ctx.fillStyle = ball.visible ? '#0095dd' : 'transparent';
@@ -173,6 +177,19 @@ function App() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         drawBall(ctx);
+        drawPaddle(ctx);
+    }
+
+    // Draw Paddle
+    const drawPaddle = (ctx: CanvasRenderingContext2D) => {
+        if (!paddle) {
+            return;
+        }
+        ctx.beginPath();
+        ctx.rect(Number(paddle.vec.x), Number(paddle.vec.y), Number(paddle.w), Number(paddle.h));
+        ctx.fillStyle = paddle.visible ? '#0095dd' : 'transparent';
+        ctx.fill();
+        ctx.closePath();
     }
 
     const loop = async () => {
@@ -182,7 +199,7 @@ function App() {
         // Sleep for 10ms
         setTimeout(loop, 1);
     }
-        
+
 
 
     return (
@@ -316,9 +333,9 @@ function App() {
                                 <th className="border border-gray-700 p-2">
                                     Entity ID
                                 </th>
-                                <th className="border border-gray-700 p-2">
+                                {/* <th className="border border-gray-700 p-2">
                                     Player
-                                </th>
+                                </th> */}
                                 <th className="border border-gray-700 p-2">
                                     Ticks
                                 </th>
@@ -328,7 +345,9 @@ function App() {
                                 <th className="border border-gray-700 p-2">
                                     Ball Y
                                 </th>
-
+                                <th className="border border-gray-700 p-2">
+                                    Paddle X
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -348,9 +367,9 @@ function App() {
                                             <td className="border border-gray-700 p-2">
                                                 {entityId}
                                             </td>
-                                            <td className="border border-gray-700 p-2">
+                                            {/* <td className="border border-gray-700 p-2">
                                                 {position?.player ?? "N/A"}
-                                            </td>
+                                            </td> */}
                                             <td className="border border-gray-700 p-2">
                                                 {game?.ticks ?? "N/A"}
                                             </td>
@@ -362,7 +381,10 @@ function App() {
                                                 {ball?.vec?.y.toString() ??
                                                     "N/A"}
                                             </td>
-
+                                            <td className="border border-gray-700 p-2">
+                                                {paddle?.vec?.x.toString() ??
+                                                    "N/A"}
+                                            </td>
                                         </tr>
                                     );
                                 }

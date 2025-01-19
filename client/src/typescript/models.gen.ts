@@ -66,6 +66,29 @@ export interface MovesValue {
 	can_move: boolean;
 }
 
+// Type definition for `dojo_starter::models::Paddle` struct
+export interface Paddle {
+	player: string;
+	vec: Vec2;
+	w: BigNumberish;
+	h: BigNumberish;
+	speed: BigNumberish;
+	dx: BigNumberish;
+	dxnegative: boolean;
+	visible: boolean;
+}
+
+// Type definition for `dojo_starter::models::PaddleValue` struct
+export interface PaddleValue {
+	vec: Vec2;
+	w: BigNumberish;
+	h: BigNumberish;
+	speed: BigNumberish;
+	dx: BigNumberish;
+	dxnegative: boolean;
+	visible: boolean;
+}
+
 // Type definition for `dojo_starter::models::Position` struct
 export interface Position {
 	player: string;
@@ -113,6 +136,8 @@ export interface SchemaType extends ISchemaType {
 		GameValue: WithFieldOrder<GameValue>,
 		Moves: WithFieldOrder<Moves>,
 		MovesValue: WithFieldOrder<MovesValue>,
+		Paddle: WithFieldOrder<Paddle>,
+		PaddleValue: WithFieldOrder<PaddleValue>,
 		Position: WithFieldOrder<Position>,
 		PositionValue: WithFieldOrder<PositionValue>,
 		Vec2: WithFieldOrder<Vec2>,
@@ -184,6 +209,27 @@ export const schema: SchemaType = {
 		last_direction: new CairoOption(CairoOptionVariant.None),
 			can_move: false,
 		},
+		Paddle: {
+			fieldOrder: ['player', 'vec', 'w', 'h', 'speed', 'dx', 'dxnegative', 'visible'],
+			player: "",
+		vec: { x: 0, y: 0, },
+			w: 0,
+			h: 0,
+			speed: 0,
+			dx: 0,
+			dxnegative: false,
+			visible: false,
+		},
+		PaddleValue: {
+			fieldOrder: ['vec', 'w', 'h', 'speed', 'dx', 'dxnegative', 'visible'],
+		vec: { x: 0, y: 0, },
+			w: 0,
+			h: 0,
+			speed: 0,
+			dx: 0,
+			dxnegative: false,
+			visible: false,
+		},
 		Position: {
 			fieldOrder: ['player', 'vec'],
 			player: "",
@@ -227,6 +273,8 @@ export enum ModelsMapping {
 	GameValue = 'dojo_starter-GameValue',
 	Moves = 'dojo_starter-Moves',
 	MovesValue = 'dojo_starter-MovesValue',
+	Paddle = 'dojo_starter-Paddle',
+	PaddleValue = 'dojo_starter-PaddleValue',
 	Position = 'dojo_starter-Position',
 	PositionValue = 'dojo_starter-PositionValue',
 	Vec2 = 'dojo_starter-Vec2',
