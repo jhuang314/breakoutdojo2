@@ -25,6 +25,20 @@ pub struct Ball {
 
 #[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
+pub struct Paddle {
+    #[key]
+    pub player: ContractAddress,
+    pub vec: Vec2,
+    pub w: u32,
+    pub h: u32,
+    pub speed: u32,
+    pub dx: u32,
+    pub dxnegative: bool,
+    pub visible: bool,
+}
+
+#[derive(Copy, Drop, Serde, Debug)]
+#[dojo::model]
 pub struct Moves {
     #[key]
     pub player: ContractAddress,
