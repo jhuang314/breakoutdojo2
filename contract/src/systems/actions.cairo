@@ -102,9 +102,10 @@ pub mod actions {
 
             let game: Game = world.read_model(player);
 
-            // if (!game.active) {
-            //     return;
-            // }
+            if (!game.active) {
+                world.write_model(@game);
+                return;
+            }
 
             let next_game = next_game(game);
             // world.write_model(@next_game);
