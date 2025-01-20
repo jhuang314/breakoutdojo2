@@ -10,7 +10,7 @@ import { WalletAccount } from "./wallet-account.tsx";
 import { HistoricalEvents } from "./historical-events.tsx";
 import { useDojoSDK, useModel } from "@dojoengine/sdk/react";
 import retry from "async-retry";
-
+import { Mutex, MutexInterface, Semaphore, SemaphoreInterface, withTimeout } from 'async-mutex';
 
 /**
  * Main application component that provides game functionality and UI.
@@ -23,6 +23,8 @@ function App() {
     const { account } = useAccount();
     const state = useDojoStore((state) => state);
     const entities = useDojoStore((state) => state.entities);
+
+    const mutex = new Mutex();
 
 
     const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
@@ -334,7 +336,10 @@ function App() {
                             <div className="flex flex-col basis-1/3">
                                 <button
                                     className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
-                                    onClick={async () => await start()}
+                                    onClick={async () => {
+                                        await mutex.runExclusive(async () => await start());
+                                    }
+                                    }
 
                                 >
                                     +Start
@@ -343,9 +348,9 @@ function App() {
                                 <button
                                     className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
                                     onClick={async () => {
-                                        await client.actions.tick(
+                                        await mutex.runExclusive(async () => await client.actions.tick(
                                             account!
-                                        );
+                                        ));
                                     }}>Tick</button>
 
                                 <button
@@ -390,25 +395,25 @@ function App() {
                                     key={idx}
                                     onMouseDown={async () => {
                                         console.log('mousedown', direction);
-                                        retry(async () => {
-                                            const txn = await client.actions.movePaddle(
+                                        // retry(async () => {
+                                            const txn = mutex.runExclusive(async () => await client.actions.movePaddle(
                                                 account!,
                                                 direction
-                                            );
+                                            ));
                                             console.log('button hold click txn', txn);
-                                        }, { retries: 100 });
+                                        // }, { retries: 10 });
                                     }}
                                     onMouseUp={async () => {
                                         console.log('mouseup', direction);
-                                        retry(async () => {
-                                            const txn = await client.actions.movePaddle(
+                                        // retry(async () => {
+                                            const txn = mutex.runExclusive(async () => await client.actions.movePaddle(
                                                 account!,
                                                 new CairoCustomEnum({
                                                     Up: "()",
                                                 }),
-                                            );
+                                            ));
                                             console.log('button hold click txn', txn);
-                                        }, { retries: 100 });
+                                        // }, { retries: 10 });
                                     }}
                                 >
                                     {label}
