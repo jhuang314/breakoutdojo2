@@ -461,7 +461,7 @@ function App() {
                                     Player
                                 </th> */}
                                 <th className="border border-gray-700 p-2">
-                                    Ticks
+                                    Frames
                                 </th>
                                 <th className="border border-gray-700 p-2">
                                     Ball X
