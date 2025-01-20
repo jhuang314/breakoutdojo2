@@ -38,3 +38,21 @@ BreakoutDojo is a provable game that can be played in the browser. It's based on
 - Database:
     
     On-Chain Storage: All core game data (ball position and velocity, paddle position, bricks, score, etc.).
+
+## How to run (backend)
+1. Clone this repository.
+2. Go in to the contract directory.
+3. In 2 terminals:
+    1. Terminal 1 Run: `katana --dev --dev.no-fee --http.cors_origins '*'`
+    2. Terminal 2 Run: `sozo build; sozo migrate`
+    3. Terminal 2 Get the torii address from the previous command. 
+    4. Terminal 2 Run: `torii -w <torii address> --http.cors_origins '*'`
+
+
+## How to run (frontend)
+
+1. Clone this repository.
+2. Install the dependencies by running `npm install` in the client directory.
+3. Start the development server by running `npm run dev`.
+4. In dojoConfig.ts comment out the last 3 lines of the config.
+5. Open http://localhost:5173/ in your browser to see the game.
