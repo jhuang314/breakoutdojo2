@@ -48,7 +48,7 @@ export function WalletAccount() {
 
     return (
         <div className="mb-6">
-            <h2 className="text-white">Connect Wallet " {connectors.length}"</h2>
+            <h2 className="text-white">Connect Wallet "{connectors.length}"</h2>
             <div style={{ display: "flex", gap: "1rem" }}>
                 Connector length: {connectors.length}
                 {connectors.map((connector) => (

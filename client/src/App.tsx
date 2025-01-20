@@ -30,6 +30,9 @@ function App() {
     const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
     const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
     const [intervalId, setIntervalId] = useState<number>(0);
+    const [intervalIds, setIntervalIds] = useState<number[]>([]);
+
+    //const intervalIds: number[] = [];
 
     const { spawn, start } = useSystemCalls();
 
@@ -307,9 +310,10 @@ function App() {
             const txn = await client.actions.tick(
                 account!
             );
-            console.log('ticking', txn, intervalId);
+            console.log('ticking', txn, intervalId, intervalIds);
         }, 1000);
         setIntervalId(i);
+        intervalIds.push(i);
 
         // await client.actions.tick(
         //     account!
@@ -331,12 +335,14 @@ function App() {
 
                 <div className="flex flex-row">
                     <canvas id="canvas" width="800" height="600"></canvas>
-                    <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
+                    {/* <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
                         <div className="flex flex-col gap-2 w-full h-48">
                             <div className="flex flex-col basis-1/3">
                                 <button
                                     className="h-12 w-12 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
                                     onClick={async () => {
+                                        intervalIds.map((i) => clearInterval(i));
+                                        setIntervalIds([]);
                                         await mutex.runExclusive(async () => await start());
                                     }
                                     }
@@ -363,9 +369,28 @@ function App() {
                             </div>
 
                         </div>
-                    </div>
+                    </div> */}
 
-                    <div className="bg-gray-700 p-4 rounded-lg shadow-inner">
+                    <div className="bg-gray-700 p-8 rounded-lg shadow-inner">
+                        <div className="flex flex-col gap-2 w-full h-48">
+                            <button
+                                className="h-12 w-42 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
+                                onClick={async () => {
+                                    intervalIds.map((i) => clearInterval(i));
+                                    intervalIds.length = 0;
+                                    await mutex.runExclusive(async () => await start());
+                                    await loop();
+                                }
+                                }
+
+                            >
+                                Start
+                            </button>
+                            <button
+                                    className="h-12 w-42 bg-gray-600 rounded-full shadow-md active:shadow-inner active:bg-gray-500 focus:outline-none text-2xl font-bold text-gray-200"
+                                    onClick={loop}>⏯</button>
+                        </div>
+                  
                         <div className="grid grid-cols-3 gap-2 w-full h-48">
                             {[
                                 {
@@ -379,7 +404,7 @@ function App() {
                                     direction: new CairoCustomEnum({
                                         Up: "()",
                                     }),
-                                    label: "⏹",
+                                    label: "🛑",
                                     col: "col-start-2",
                                 },
                                 {
@@ -396,23 +421,23 @@ function App() {
                                     onMouseDown={async () => {
                                         console.log('mousedown', direction);
                                         // retry(async () => {
-                                            const txn = mutex.runExclusive(async () => await client.actions.movePaddle(
-                                                account!,
-                                                direction
-                                            ));
-                                            console.log('button hold click txn', txn);
+                                        const txn = mutex.runExclusive(async () => await client.actions.movePaddle(
+                                            account!,
+                                            direction
+                                        ));
+                                        console.log('button hold click txn', txn);
                                         // }, { retries: 10 });
                                     }}
                                     onMouseUp={async () => {
                                         console.log('mouseup', direction);
                                         // retry(async () => {
-                                            const txn = mutex.runExclusive(async () => await client.actions.movePaddle(
-                                                account!,
-                                                new CairoCustomEnum({
-                                                    Up: "()",
-                                                }),
-                                            ));
-                                            console.log('button hold click txn', txn);
+                                        const txn = mutex.runExclusive(async () => await client.actions.movePaddle(
+                                            account!,
+                                            new CairoCustomEnum({
+                                                Up: "()",
+                                            }),
+                                        ));
+                                        console.log('button hold click txn', txn);
                                         // }, { retries: 10 });
                                     }}
                                 >
@@ -425,6 +450,7 @@ function App() {
                 </div>
 
                 <div className="mt-8 overflow-x-auto">
+                    <div>Awesome game state metadata</div>
                     <table className="w-full border-collapse border border-gray-700">
                         <thead>
                             <tr className="bg-gray-800 text-white">
@@ -494,7 +520,7 @@ function App() {
 
 
                 {/* // Here sdk is passed as props but this can be done via contexts */}
-                <HistoricalEvents />
+                {/* <HistoricalEvents /> */}
             </div>
         </div>
     );
