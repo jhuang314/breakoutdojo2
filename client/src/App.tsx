@@ -328,6 +328,7 @@ function App() {
     return (
         <div className="bg-black min-h-screen w-full p-4 sm:p-8">
             <div className="max-w-7xl mx-auto">
+                <h1 className="flex flex-row text-white text-6xl">Breakout Dojo</h1>
                 <WalletAccount />
                 {/* <div className="mt-8 overflow-x-auto">
                     

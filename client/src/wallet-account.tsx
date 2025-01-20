@@ -33,7 +33,7 @@ export function WalletAccount() {
 
     if (undefined !== address) {
         return (
-            <div className="mb-6">
+            <div className="mb-6 p-8 px-0">
                 <div style={{ display: "flex", gap: "1rem" }}>
                     <button
                         onClick={() => disconnect()}
@@ -46,11 +46,19 @@ export function WalletAccount() {
         );
     }
 
+    if (connectors.length === 0) {
+        return (
+            <div className="mb-6 p-8 px-0">
+                <h2 className="text-white">Reload page to retry loading Katana wallets</h2>
+            </div>
+        );
+    }
+
     return (
-        <div className="mb-6">
-            <h2 className="text-white">Connect Wallet "{connectors.length}"</h2>
+        <div className="mb-6 p-8 px-0">
+            <h2 className="text-white">Connect Wallet:</h2>
             <div style={{ display: "flex", gap: "1rem" }}>
-                Connector length: {connectors.length}
+
                 {connectors.map((connector) => (
                     <button
                         key={connector.id}
