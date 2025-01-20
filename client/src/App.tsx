@@ -311,7 +311,7 @@ function App() {
                 account!
             );
             console.log('ticking', txn, intervalId, intervalIds);
-        }, 1000);
+        }, 300);
         setIntervalId(i);
         intervalIds.push(i);
 
